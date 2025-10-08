@@ -23,29 +23,111 @@
 ## 项目结构
 
 ```
-crypto_ai_trading/
-├── main.py                     # 主程序入口
-├── config.yaml                 # 配置文件
-├── exchange_rate_limiter.py    # 基础限流器和API客户端
-├── advanced_rate_limiting.py   # 高级限流算法实现
-├── priority_queue_manager.py   # 优先级队列管理
-├── fallback_retry_system.py    # 降级和重试系统
-├── redis_config.lua           # Redis限流脚本
-└── README.md                  # 项目文档
+crypto-ai-trading-system/
+├── 🤖 project_manager.py           # 项目管理工具
+├── 🚀 start.sh                     # 一键启动脚本
+├── 📋 README.md                    # 项目说明文档
+├── 🏗️ backend/                     # 后端API服务
+│   ├── src/api/                    # REST API接口
+│   ├── src/services/               # AI Agent服务层
+│   │   ├── news_collector.py       # 新闻收集Agent
+│   │   ├── llm_long_strategy_analyzer.py    # 做多分析Agent
+│   │   ├── llm_short_strategy_analyzer.py   # 做空分析Agent
+│   │   ├── llm_strategy_generator.py        # 策略生成Agent
+│   │   └── trading_executor.py      # 交易执行Agent
+│   ├── src/models/                 # 数据模型
+│   ├── src/core/                   # 核心功能模块
+│   └── tests/                      # 完整测试套件
+├── 🔧 tools/                       # 开发和分析工具
+│   ├── analysis/                   # 测试分析工具
+│   │   ├── run_tests.py           # 测试运行器
+│   │   └── test_report_generator.py # 测试报告生成
+│   ├── performance/                # 性能分析工具
+│   │   ├── simple_performance_analysis.py    # 系统性能分析
+│   │   ├── database_optimization_analysis.py # 数据库优化分析
+│   │   └── api_performance_analysis.py       # API性能分析
+│   └── monitoring/                 # 监控工具
+│       ├── advanced_rate_limiting.py       # 高级限流算法
+│       ├── exchange_rate_limiter.py        # 交易所限流
+│       ├── priority_queue_manager.py        # 优先级队列
+│       └── fallback_retry_system.py         # 降级重试系统
+├── 📜 scripts/                     # 脚本文件
+│   └── deployment/                 # 部署相关
+│       ├── docker-compose.yml     # Docker编排配置
+│       ├── .env.example          # 环境变量模板
+│       ├── config.yaml           # 系统配置
+│       └── requirements.txt      # Python依赖
+├── 📚 docs/                        # 项目文档
+│   ├── reports/                    # 分析报告
+│   │   ├── *performance_report.*  # 性能分析报告
+│   │   └── test_report.*         # 测试报告
+│   ├── api/                        # API文档
+│   ├── setup/                      # 安装指南
+│   └── architecture/               # 架构文档
+├── ⚙️ config/                      # 配置文件
+│   ├── redis/                      # Redis配置
+│   │   └── redis_config.lua       # Redis限流脚本
+│   ├── postgres/                   # PostgreSQL配置
+│   │   └── postgresql_config_best_practices.md
+│   └── nginx/                      # Nginx配置
+├── 📱 mobile/                      # 移动端应用
+├── 📋 specs/                       # 技术规格文档
+│   └── 001-python-llm-agent/       # 详细技术规格
+└── 🔄 .github/                     # GitHub配置
+    └── workflows/                  # CI/CD工作流
 ```
 
 ## 快速开始
 
 ### 1. 环境要求
 
-- Python 3.8+
+- Python 3.11+
+- Docker & Docker Compose
 - Redis 6.0+
-- 网络连接（访问交易所API）
+- PostgreSQL 14+ (带TimescaleDB扩展)
+- 网络连接（访问交易所API和LLM服务）
 
-### 2. 安装依赖
+### 2. 一键启动 (推荐)
 
 ```bash
-pip install redis httpx asyncio pyyaml
+# 克隆项目
+git clone https://github.com/cys813/crypto-ai-trading-system.git
+cd crypto-ai-trading-system
+
+# 一键设置环境并启动服务
+./start.sh setup
+./start.sh start
+```
+
+### 3. 使用项目管理工具
+
+```bash
+# 查看项目结构
+python3 project_manager.py structure
+
+# 运行性能分析
+python3 project_manager.py analyze
+
+# 运行测试
+python3 project_manager.py test
+
+# 设置开发环境
+python3 project_manager.py setup
+```
+
+### 4. 手动启动
+
+```bash
+# 设置环境变量
+cp scripts/deployment/.env.example .env
+# 编辑 .env 文件，配置API密钥等
+
+# 启动服务
+cd scripts/deployment
+docker-compose up -d
+
+# 安装Python依赖（用于本地开发）
+pip3 install -r requirements.txt
 ```
 
 ### 3. 配置环境变量

@@ -13,10 +13,13 @@ import sys
 from typing import Dict, Any, Optional
 from datetime import datetime
 
-from exchange_rate_limiter import ExchangeAPIClient, ExchangeRateLimiter, APIRequest, Priority
-from advanced_rate_limiting import ExchangeRateLimitManager
-from priority_queue_manager import PriorityQueueManager, ExchangeTaskHandler
-from fallback_retry_system import ResilientAPIClient, RetryConfig, FallbackConfig, CircuitBreakerConfig
+# 添加项目根目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+
+from tools.monitoring.exchange_rate_limiter import ExchangeAPIClient, ExchangeRateLimiter, APIRequest, Priority
+from tools.monitoring.advanced_rate_limiting import ExchangeRateLimitManager
+from tools.monitoring.priority_queue_manager import PriorityQueueManager, ExchangeTaskHandler
+from tools.monitoring.fallback_retry_system import ResilientAPIClient, RetryConfig, FallbackConfig, CircuitBreakerConfig
 import redis
 import httpx
 

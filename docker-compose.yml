@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # PostgreSQL + TimescaleDB
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    container_name: crypto_trading_postgres
+    environment:
+      POSTGRES_DB: crypto_trading_db
+      POSTGRES_USER: crypto_trading
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crypto_trading_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/docker/init-timescaledb.sql:/docker-entrypoint-initdb.d/init-timescaledb.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crypto_trading -d crypto_trading_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: crypto_trading_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crypto_trading_backend
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://crypto_trading:${POSTGRES_PASSWORD:-crypto_trading_password}@postgres:5432/crypto_trading_db
+      - REDIS_URL=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Celery Worker
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crypto_trading_celery_worker
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://crypto_trading:${POSTGRES_PASSWORD:-crypto_trading_password}@postgres:5432/crypto_trading_db
+      - REDIS_URL=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    depends_on:
+      - postgres
+      - redis
+    command: celery -A src.tasks.celery_app worker --loglevel=info
+
+  # Celery Beat (Scheduler)
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crypto_trading_celery_beat
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://crypto_trading:${POSTGRES_PASSWORD:-crypto_trading_password}@postgres:5432/crypto_trading_db
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    depends_on:
+      - postgres
+      - redis
+    command: celery -A src.tasks.celery_app beat --loglevel=info
+
+volumes:
+  postgres_data:
+  redis_data:

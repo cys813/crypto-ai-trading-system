@@ -1,0 +1,204 @@
+{
+  "timestamp": "2025-10-08T07:28:30.554353",
+  "project_root": ".",
+  "analysis": {
+    "code_structure": {
+      "total_files": 78,
+      "total_lines": 29175,
+      "large_files": [],
+      "module_distribution": {
+        "src": {
+          "files": 2,
+          "lines": 213
+        },
+        "tasks": {
+          "files": 7,
+          "lines": 1310
+        },
+        "api": {
+          "files": 1,
+          "lines": 12
+        },
+        "endpoints": {
+          "files": 6,
+          "lines": 2287
+        },
+        "core": {
+          "files": 13,
+          "lines": 5624
+        },
+        "models": {
+          "files": 10,
+          "lines": 1963
+        },
+        "services": {
+          "files": 15,
+          "lines": 9851
+        },
+        "constitution": {
+          "files": 3,
+          "lines": 705
+        },
+        "tests": {
+          "files": 2,
+          "lines": 171
+        },
+        "unit": {
+          "files": 5,
+          "lines": 2192
+        },
+        "contract": {
+          "files": 6,
+          "lines": 1980
+        },
+        "integration": {
+          "files": 6,
+          "lines": 2603
+        },
+        "alembic": {
+          "files": 1,
+          "lines": 107
+        },
+        "versions": {
+          "files": 1,
+          "lines": 157
+        }
+      },
+      "test_coverage": {
+        "test_files": 19,
+        "test_lines": 6946
+      },
+      "largest_files": [
+        [
+          "src/api/endpoints/strategies.py",
+          1094
+        ],
+        [
+          "src/services/risk_manager.py",
+          1011
+        ],
+        [
+          "src/services/dynamic_fund_manager.py",
+          985
+        ],
+        [
+          "src/services/llm_short_strategy_analyzer.py",
+          854
+        ],
+        [
+          "src/services/position_monitor.py",
+          818
+        ],
+        [
+          "src/services/order_manager.py",
+          816
+        ],
+        [
+          "src/services/technical_analysis_engine.py",
+          805
+        ],
+        [
+          "tests/unit/test_dynamic_fund_manager.py",
+          767
+        ],
+        [
+          "src/services/trading_executor.py",
+          761
+        ],
+        [
+          "src/services/llm_strategy_generator.py",
+          737
+        ]
+      ]
+    },
+    "dependencies": {
+      "external_deps": 38,
+      "internal_deps": 144,
+      "heavy_libs": [],
+      "categories": {
+        "web_framework": 2,
+        "other": 20,
+        "database": 3,
+        "cache": 2,
+        "task_queue": 1,
+        "ai_llm": 5,
+        "data_processing": 2,
+        "testing": 3
+      }
+    },
+    "architecture": {
+      "layers": {
+        "api": {
+          "files": 7,
+          "lines": 2299
+        },
+        "services": {
+          "files": 15,
+          "lines": 9851
+        },
+        "models": {
+          "files": 10,
+          "lines": 1963
+        },
+        "core": {
+          "files": 13,
+          "lines": 5624
+        },
+        "tasks": {
+          "files": 7,
+          "lines": 1310
+        }
+      },
+      "async_functions": 155,
+      "database_models": 9,
+      "api_endpoints": 38,
+      "background_tasks": 17
+    }
+  },
+  "recommendations": [
+    {
+      "category": "代码规模",
+      "priority": "中",
+      "issue": "代码库规模较大 (29175 行)",
+      "suggestion": "考虑模块化拆分，将相关功能组织到独立子模块",
+      "impact": "提高可维护性和团队协作效率"
+    },
+    {
+      "category": "文件大小",
+      "priority": "高",
+      "issue": "存在超大文件: 1094 行",
+      "suggestion": "将大文件按功能拆分为多个小文件",
+      "impact": "提高代码可读性和维护性"
+    },
+    {
+      "category": "性能监控",
+      "priority": "高",
+      "issue": "缺少性能监控机制",
+      "suggestion": "集成APM工具监控关键性能指标",
+      "impact": "及时发现性能瓶颈和优化机会"
+    },
+    {
+      "category": "缓存策略",
+      "priority": "高",
+      "issue": "缺少缓存层设计",
+      "suggestion": "实现Redis缓存减少数据库查询",
+      "impact": "大幅提升查询性能"
+    },
+    {
+      "category": "数据库优化",
+      "priority": "中",
+      "issue": "需要数据库查询优化",
+      "suggestion": "添加适当索引和查询优化",
+      "impact": "提升数据库操作性能"
+    }
+  ],
+  "performance_score": {
+    "total_score": 76.7,
+    "grade": "B (一般)",
+    "individual_scores": {
+      "code_quality": 75,
+      "architecture": 80,
+      "performance": 75
+    }
+  }
+}

@@ -1,0 +1,1278 @@
+openapi: 3.0.3
+info:
+  title: 多Agent加密货币量化交易分析系统 API
+  description: |
+    基于Python的多Agent虚拟货币量化交易分析系统API文档
+
+    系统特性：
+    - 5个专业agent（新闻收集、做多分析、做空分析、策略生成、交易执行）
+    - 支持前5大主流交易所
+    - 实时策略分析和自动交易执行
+    - 动态资金管理和风险控制
+    - 移动端实时监控支持
+
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@crypto-ai-trading.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.crypto-ai-trading.com/v1
+    description: 生产环境
+  - url: https://staging-api.crypto-ai-trading.com/v1
+    description: 测试环境
+  - url: http://localhost:8000/v1
+    description: 开发环境
+
+paths:
+  # ==================== 系统管理 ====================
+  /health:
+    get:
+      tags:
+        - 系统
+      summary: 系统健康检查
+      description: 检查系统整体健康状态和各组件状态
+      responses:
+        '200':
+          description: 系统健康
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /status:
+    get:
+      tags:
+        - 系统
+      summary: 系统状态详情
+      description: 获取详细的系统运行状态和性能指标
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 系统状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatus'
+
+  # ==================== 认证管理 ====================
+  /auth/login:
+    post:
+      tags:
+        - 认证
+      summary: 用户登录
+      description: 用户登录获取访问令牌
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: 认证失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      tags:
+        - 认证
+      summary: 刷新令牌
+      description: 使用刷新令牌获取新的访问令牌
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 刷新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshResponse'
+
+  # ==================== 市场数据 ====================
+  /markets/symbols:
+    get:
+      tags:
+        - 市场数据
+      summary: 获取交易符号列表
+      description: 获取所有支持的交易符号信息
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: exchange
+          in: query
+          schema:
+            type: string
+          description: 交易所代码
+        - name: active_only
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: 只返回活跃符号
+      responses:
+        '200':
+          description: 符号列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  symbols:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TradingSymbol'
+
+  /markets/klines:
+    get:
+      tags:
+        - 市场数据
+      summary: 获取K线数据
+      description: 获取指定交易符号的K线数据
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 交易符号 (如 BTC/USDT)
+        - name: interval
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [1m, 5m, 15m, 30m, 1h, 4h, 1d]
+          description: 时间间隔
+        - name: exchange
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 交易所代码
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
+          description: 数据条数限制
+      responses:
+        '200':
+          description: K线数据
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  klines:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KlineData'
+
+  /markets/ticker:
+    get:
+      tags:
+        - 市场数据
+      summary: 获取价格行情
+      description: 获取指定符号的实时价格行情
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 交易符号
+        - name: exchange
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 交易所代码
+      responses:
+        '200':
+          description: 价格行情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticker'
+
+  # ==================== 新闻数据 ====================
+  /news:
+    get:
+      tags:
+        - 新闻数据
+      summary: 获取新闻列表
+      description: 获取最新的加密货币相关新闻
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+          description: 返回条数
+        - name: sentiment
+          in: query
+          schema:
+            type: string
+            enum: [positive, negative, neutral]
+          description: 情感过滤
+        - name: symbol
+          in: query
+          schema:
+            type: string
+          description: 相关符号过滤
+      responses:
+        '200':
+          description: 新闻列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NewsItem'
+
+  /news/summary:
+    get:
+      tags:
+        - 新闻数据
+      summary: 获取新闻摘要
+      description: 获取AI生成的新闻摘要和市场影响分析
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: hours
+          in: query
+          schema:
+            type: integer
+            default: 24
+          description: 摘要时间范围（小时）
+      responses:
+        '200':
+          description: 新闻摘要
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSummary'
+
+  # ==================== 技术分析 ====================
+  /analysis/technical:
+    get:
+      tags:
+        - 技术分析
+      summary: 获取技术分析结果
+      description: 获取指定符号的技术分析结果
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 交易符号
+        - name: exchange
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 交易所代码
+        - name: timeframe
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [1m, 5m, 15m, 30m, 1h, 4h, 1d]
+          description: 分析时间框架
+      responses:
+        '200':
+          description: 技术分析结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechnicalAnalysis'
+
+  # ==================== 交易策略 ====================
+  /strategies:
+    get:
+      tags:
+        - 交易策略
+      summary: 获取策略列表
+      description: 获取用户的交易策略列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, paused, archived]
+          description: 策略状态过滤
+        - name: symbol
+          in: query
+          schema:
+            type: string
+          description: 交易符号过滤
+      responses:
+        '200':
+          description: 策略列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  strategies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TradingStrategy'
+
+    post:
+      tags:
+        - 交易策略
+      summary: 创建新策略
+      description: 创建新的交易策略
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStrategyRequest'
+      responses:
+        '201':
+          description: 策略创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingStrategy'
+
+  /strategies/{strategy_id}:
+    get:
+      tags:
+        - 交易策略
+      summary: 获取策略详情
+      description: 获取指定策略的详细信息
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: strategy_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 策略详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingStrategy'
+
+    put:
+      tags:
+        - 交易策略
+      summary: 更新策略
+      description: 更新指定策略的配置
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: strategy_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStrategyRequest'
+      responses:
+        '200':
+          description: 策略更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingStrategy'
+
+    delete:
+      tags:
+        - 交易策略
+      summary: 删除策略
+      description: 删除指定的交易策略
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: strategy_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: 策略删除成功
+
+  /strategies/{strategy_id}/execute:
+    post:
+      tags:
+        - 交易策略
+      summary: 执行策略
+      description: 手动触发策略执行
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: strategy_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 策略执行结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategyExecution'
+
+  # ==================== 交易订单 ====================
+  /orders:
+    get:
+      tags:
+        - 交易订单
+      summary: 获取订单列表
+      description: 获取用户的交易订单列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, filled, cancelled, failed]
+          description: 订单状态过滤
+        - name: symbol
+          in: query
+          schema:
+            type: string
+          description: 交易符号过滤
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 500
+          description: 返回条数限制
+      responses:
+        '200':
+          description: 订单列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TradingOrder'
+
+    post:
+      tags:
+        - 交易订单
+      summary: 创建订单
+      description: 创建新的交易订单
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: 订单创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingOrder'
+
+  /orders/{order_id}:
+    get:
+      tags:
+        - 交易订单
+      summary: 获取订单详情
+      description: 获取指定订单的详细信息
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 订单详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingOrder'
+
+    delete:
+      tags:
+        - 交易订单
+      summary: 取消订单
+      description: 取消指定的未完成订单
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 订单取消成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingOrder'
+
+  # ==================== 持仓管理 ====================
+  /positions:
+    get:
+      tags:
+        - 持仓管理
+      summary: 获取持仓列表
+      description: 获取用户的当前持仓信息
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: symbol
+          in: query
+          schema:
+            type: string
+          description: 交易符号过滤
+        - name: side
+          in: query
+          schema:
+            type: string
+            enum: [long, short]
+          description: 持仓方向过滤
+      responses:
+        '200':
+          description: 持仓列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  positions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Position'
+
+  # ==================== 分析报告 ====================
+  /analysis/generate:
+    post:
+      tags:
+        - 分析报告
+      summary: 生成综合分析报告
+      description: 启动多agent综合分析，生成交易策略建议
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalysisRequest'
+      responses:
+        '200':
+          description: 分析任务已启动
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisTask'
+
+  /analysis/tasks/{task_id}:
+    get:
+      tags:
+        - 分析报告
+      summary: 获取分析任务状态
+      description: 获取指定分析任务的执行状态和结果
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 任务状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisTask'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ==================== 通用响应模型 ====================
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy, degraded]
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        components:
+          type: object
+          properties:
+            database:
+              type: string
+              enum: [healthy, unhealthy]
+            redis:
+              type: string
+              enum: [healthy, unhealthy]
+            llm_services:
+              type: string
+              enum: [healthy, unhealthy, degraded]
+            exchanges:
+              type: object
+              additionalProperties:
+                type: string
+                enum: [online, offline, maintenance]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+
+    # ==================== 认证模型 ====================
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: 用户名或邮箱
+        password:
+          type: string
+          format: password
+        remember_me:
+          type: boolean
+          default: false
+
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+          default: bearer
+        expires_in:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+
+    RefreshResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          type: integer
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        risk_level:
+          type: string
+          enum: [low, medium, high]
+        created_at:
+          type: string
+          format: date-time
+
+    # ==================== 市场数据模型 ====================
+    TradingSymbol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        symbol:
+          type: string
+          example: BTC/USDT
+        base_asset:
+          type: string
+          example: BTC
+        quote_asset:
+          type: string
+          example: USDT
+        status:
+          type: string
+          enum: [active, inactive]
+        is_spot_trading:
+          type: boolean
+        min_qty:
+          type: number
+          format: decimal
+        max_qty:
+          type: number
+          format: decimal
+        step_size:
+          type: number
+          format: decimal
+
+    KlineData:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+        open:
+          type: number
+          format: decimal
+        high:
+          type: number
+          format: decimal
+        low:
+          type: number
+          format: decimal
+        close:
+          type: number
+          format: decimal
+        volume:
+          type: number
+          format: decimal
+
+    Ticker:
+      type: object
+      properties:
+        symbol:
+          type: string
+        price:
+          type: number
+          format: decimal
+        change_24h:
+          type: number
+          format: decimal
+        percent_change_24h:
+          type: number
+          format: decimal
+        volume_24h:
+          type: number
+          format: decimal
+        high_24h:
+          type: number
+          format: decimal
+        low_24h:
+          type: number
+          format: decimal
+        timestamp:
+          type: string
+          format: date-time
+
+    # ==================== 新闻数据模型 ====================
+    NewsItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        url:
+          type: string
+        source:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+        relevance_score:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 1
+        sentiment:
+          type: string
+          enum: [positive, negative, neutral]
+        related_symbols:
+          type: array
+          items:
+            type: string
+
+    NewsSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        summary_text:
+          type: string
+        key_points:
+          type: array
+          items:
+            type: string
+        market_impact:
+          type: string
+          enum: [high, medium, low]
+        news_count:
+          type: integer
+        time_period_hours:
+          type: integer
+        confidence_score:
+          type: number
+          format: decimal
+        created_at:
+          type: string
+          format: date-time
+
+    # ==================== 技术分析模型 ====================
+    TechnicalAnalysis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        symbol:
+          type: string
+        timeframe:
+          type: string
+        signal_type:
+          type: string
+          enum: [long, short, neutral]
+        signal_strength:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 1
+        support_level:
+          type: number
+          format: decimal
+        resistance_level:
+          type: number
+          format: decimal
+        entry_conditions:
+          type: object
+        exit_conditions:
+          type: object
+        risk_factors:
+          type: array
+          items:
+            type: string
+        confidence_score:
+          type: number
+          format: decimal
+        created_at:
+          type: string
+          format: date-time
+
+    # ==================== 交易策略模型 ====================
+    TradingStrategy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        strategy_type:
+          type: string
+          enum: [long, short, neutral]
+        status:
+          type: string
+          enum: [active, paused, archived]
+        llm_provider:
+          type: string
+        confidence_score:
+          type: number
+          format: decimal
+        entry_price:
+          type: number
+          format: decimal
+        position_size:
+          type: number
+          format: decimal
+        stop_loss_price:
+          type: number
+          format: decimal
+        take_profit_price:
+          type: number
+          format: decimal
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateStrategyRequest:
+      type: object
+      required:
+        - name
+        - symbol
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        strategy_type:
+          type: string
+          enum: [long, short, neutral]
+        symbol:
+          type: string
+        entry_price:
+          type: number
+          format: decimal
+        position_size:
+          type: number
+          format: decimal
+        stop_loss_price:
+          type: number
+          format: decimal
+        take_profit_price:
+          type: number
+          format: decimal
+
+    UpdateStrategyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, paused, archived]
+        entry_price:
+          type: number
+          format: decimal
+        position_size:
+          type: number
+          format: decimal
+        stop_loss_price:
+          type: number
+          format: decimal
+        take_profit_price:
+          type: number
+          format: decimal
+
+    StrategyExecution:
+      type: object
+      properties:
+        execution_id:
+          type: string
+          format: uuid
+        strategy_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        result:
+          type: object
+        error_message:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    # ==================== 交易订单模型 ====================
+    TradingOrder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+        symbol:
+          type: string
+        side:
+          type: string
+          enum: [buy, sell]
+        order_type:
+          type: string
+          enum: [market, limit, stop, stop_limit]
+        amount:
+          type: number
+          format: decimal
+        price:
+          type: number
+          format: decimal
+        status:
+          type: string
+          enum: [pending, filled, cancelled, failed]
+        filled_amount:
+          type: number
+          format: decimal
+        average_price:
+          type: number
+          format: decimal
+        stop_loss_price:
+          type: number
+          format: decimal
+        take_profit_price:
+          type: number
+          format: decimal
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        filled_at:
+          type: string
+          format: date-time
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - symbol
+        - side
+        - order_type
+        - amount
+      properties:
+        symbol:
+          type: string
+        side:
+          type: string
+          enum: [buy, sell]
+        order_type:
+          type: string
+          enum: [market, limit, stop, stop_limit]
+        amount:
+          type: number
+          format: decimal
+        price:
+          type: number
+          format: decimal
+        stop_loss_price:
+          type: number
+          format: decimal
+        take_profit_price:
+          type: number
+          format: decimal
+        timeout_seconds:
+          type: integer
+          default: 300
+
+    # ==================== 持仓模型 ====================
+    Position:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        symbol:
+          type: string
+        side:
+          type: string
+          enum: [long, short]
+        amount:
+          type: number
+          format: decimal
+        average_cost:
+          type: number
+          format: decimal
+        current_price:
+          type: number
+          format: decimal
+        unrealized_pnl:
+          type: number
+          format: decimal
+        realized_pnl:
+          type: number
+          format: decimal
+        risk_exposure:
+          type: number
+          format: decimal
+        opened_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # ==================== 系统状态模型 ====================
+    SystemStatus:
+      type: object
+      properties:
+        system_health:
+          type: string
+          enum: [healthy, unhealthy, degraded]
+        uptime_seconds:
+          type: integer
+        active_strategies:
+          type: integer
+        pending_orders:
+          type: integer
+        active_positions:
+          type: integer
+        performance_metrics:
+          type: object
+          properties:
+            requests_per_second:
+              type: number
+            average_response_time:
+              type: number
+            error_rate:
+              type: number
+        component_status:
+          type: object
+          properties:
+            database:
+              type: string
+              enum: [healthy, unhealthy]
+            redis:
+              type: string
+              enum: [healthy, unhealthy]
+            llm_services:
+              type: object
+              additionalProperties:
+                type: string
+                enum: [healthy, unhealthy, degraded]
+            exchanges:
+              type: object
+              additionalProperties:
+                type: string
+                enum: [online, offline, maintenance]
+
+    # ==================== 分析任务模型 ====================
+    AnalysisRequest:
+      type: object
+      required:
+        - symbol
+        - timeframe
+      properties:
+        symbol:
+          type: string
+        exchange:
+          type: string
+        timeframe:
+          type: string
+          enum: [1m, 5m, 15m, 30m, 1h, 4h, 1d]
+        include_news:
+          type: boolean
+          default: true
+        include_technical:
+          type: boolean
+          default: true
+        analysis_depth:
+          type: string
+          enum: [basic, standard, deep]
+          default: standard
+
+    AnalysisTask:
+      type: object
+      properties:
+        task_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        progress:
+          type: object
+          properties:
+            news_collection:
+              type: number
+              format: decimal
+            technical_analysis:
+              type: number
+              format: decimal
+            long_strategy:
+              type: number
+              format: decimal
+            short_strategy:
+              type: number
+              format: decimal
+            final_strategy:
+              type: number
+              format: decimal
+        result:
+          $ref: '#/components/schemas/TradingStrategy'
+        error_message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time

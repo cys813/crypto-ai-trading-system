@@ -1,0 +1,529 @@
+{
+  "timestamp": "2025-10-08T07:30:02.477886",
+  "project_root": ".",
+  "analysis": {
+    "api_structure": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/login",
+          "file": "src/api/endpoints/auth.py",
+          "is_async": false
+        },
+        {
+          "method": "POST",
+          "path": "/refresh",
+          "file": "src/api/endpoints/auth.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/me",
+          "file": "src/api/endpoints/auth.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/strategies",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": false
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/{strategy_id}/execute",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/signals/execute",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/orders",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/orders",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "DELETE",
+          "path": "/orders/{order_id}",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/orders/{order_id}",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/positions",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/positions/{position_id}",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/portfolio",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/risk/assessment",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/risk/control",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/monitoring/stats",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/monitoring/start",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/monitoring/stop",
+          "file": "src/api/endpoints/trading.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/long-analysis",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": false
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/short-analysis",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/strategies/long-analysis/history",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/comprehensive",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/strategies/performance",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/batch-analysis",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/strategies/templates",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/generate",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/strategies/generate-batch",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/strategies/{strategy_id}",
+          "file": "src/api/endpoints/strategies.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/news",
+          "file": "src/api/endpoints/news.py",
+          "is_async": false
+        },
+        {
+          "method": "GET",
+          "path": "/news/summary",
+          "file": "src/api/endpoints/news.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/news/market-overview",
+          "file": "src/api/endpoints/news.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/news/collect",
+          "file": "src/api/endpoints/news.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/news/statistics",
+          "file": "src/api/endpoints/news.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/health",
+          "file": "src/api/endpoints/monitoring.py",
+          "is_async": false
+        },
+        {
+          "method": "GET",
+          "path": "/status",
+          "file": "src/api/endpoints/monitoring.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/metrics",
+          "file": "src/api/endpoints/monitoring.py",
+          "is_async": true
+        },
+        {
+          "method": "GET",
+          "path": "/alerts",
+          "file": "src/api/endpoints/monitoring.py",
+          "is_async": true
+        },
+        {
+          "method": "POST",
+          "path": "/test",
+          "file": "src/api/endpoints/monitoring.py",
+          "is_async": true
+        }
+      ],
+      "middleware": [],
+      "async_endpoints": 33,
+      "sync_endpoints": 5,
+      "response_models": 48,
+      "validation_complexity": {
+        "Field(": 43,
+        "Pydantic": 1,
+        "BaseModel": 23,
+        "Query(": 30
+      },
+      "error_handling": 158
+    },
+    "concurrency": {
+      "async_functions": 127,
+      "await_usage": 129,
+      "asyncio_usage": 7,
+      "threading_usage": 0,
+      "pool_usage": 7,
+      "blocking_operations": 1,
+      "concurrency_patterns": [
+        {
+          "file": "src/main.py",
+          "type": "async",
+          "async_functions": 5,
+          "await_usage": 6
+        },
+        {
+          "file": "src/tasks/news_tasks.py",
+          "type": "async",
+          "async_functions": 1,
+          "await_usage": 5
+        },
+        {
+          "file": "src/tasks/order_monitor.py",
+          "type": "async",
+          "async_functions": 8,
+          "await_usage": 20
+        },
+        {
+          "file": "src/api/endpoints/auth.py",
+          "type": "async",
+          "async_functions": 3,
+          "await_usage": 0
+        },
+        {
+          "file": "src/api/endpoints/trading.py",
+          "type": "async",
+          "async_functions": 15,
+          "await_usage": 9
+        },
+        {
+          "file": "src/api/endpoints/strategies.py",
+          "type": "async",
+          "async_functions": 13,
+          "await_usage": 14
+        },
+        {
+          "file": "src/api/endpoints/news.py",
+          "type": "async",
+          "async_functions": 6,
+          "await_usage": 3
+        },
+        {
+          "file": "src/api/endpoints/monitoring.py",
+          "type": "async",
+          "async_functions": 5,
+          "await_usage": 0
+        },
+        {
+          "file": "src/core/llm_integration.py",
+          "type": "async",
+          "async_functions": 7,
+          "await_usage": 6
+        },
+        {
+          "file": "src/core/trading_logging.py",
+          "type": "async",
+          "async_functions": 16,
+          "await_usage": 21
+        },
+        {
+          "file": "src/core/logging.py",
+          "type": "async",
+          "async_functions": 3,
+          "await_usage": 0
+        },
+        {
+          "file": "src/core/trading_validation.py",
+          "type": "async",
+          "async_functions": 8,
+          "await_usage": 9
+        },
+        {
+          "file": "src/core/exchange_integration.py",
+          "type": "async",
+          "async_functions": 19,
+          "await_usage": 13
+        },
+        {
+          "file": "src/core/exceptions.py",
+          "type": "async",
+          "async_functions": 5,
+          "await_usage": 1
+        },
+        {
+          "file": "src/core/cache.py",
+          "type": "async",
+          "async_functions": 13,
+          "await_usage": 22
+        }
+      ]
+    },
+    "response_optimization": {
+      "compression": 0,
+      "streaming": 0,
+      "caching": 3,
+      "batching": 4,
+      "pagination": 0,
+      "optimization_features": [],
+      "performance_patterns": [
+        {
+          "file": "src/main.py",
+          "patterns": [
+            "async",
+            "cache"
+          ]
+        },
+        {
+          "file": "src/tasks/news_tasks.py",
+          "patterns": [
+            "celery",
+            "async",
+            "cache",
+            "batch"
+          ]
+        },
+        {
+          "file": "src/tasks/monitoring_tasks.py",
+          "patterns": [
+            "celery"
+          ]
+        },
+        {
+          "file": "src/tasks/trading_tasks.py",
+          "patterns": [
+            "celery"
+          ]
+        },
+        {
+          "file": "src/tasks/order_monitor.py",
+          "patterns": [
+            "celery",
+            "async",
+            "cache",
+            "batch"
+          ]
+        },
+        {
+          "file": "src/tasks/celery_app.py",
+          "patterns": [
+            "celery"
+          ]
+        },
+        {
+          "file": "src/tasks/__init__.py",
+          "patterns": [
+            "celery"
+          ]
+        },
+        {
+          "file": "src/tasks/analysis_tasks.py",
+          "patterns": [
+            "celery"
+          ]
+        },
+        {
+          "file": "src/api/endpoints/auth.py",
+          "patterns": [
+            "async"
+          ]
+        },
+        {
+          "file": "src/api/endpoints/trading.py",
+          "patterns": [
+            "async"
+          ]
+        },
+        {
+          "file": "src/api/endpoints/strategies.py",
+          "patterns": [
+            "async",
+            "batch"
+          ]
+        },
+        {
+          "file": "src/api/endpoints/news.py",
+          "patterns": [
+            "async",
+            "batch"
+          ]
+        },
+        {
+          "file": "src/api/endpoints/monitoring.py",
+          "patterns": [
+            "celery",
+            "async"
+          ]
+        },
+        {
+          "file": "src/core/llm_integration.py",
+          "patterns": [
+            "async"
+          ]
+        },
+        {
+          "file": "src/core/config.py",
+          "patterns": [
+            "celery",
+            "async"
+          ]
+        },
+        {
+          "file": "src/core/trading_logging.py",
+          "patterns": [
+            "async"
+          ]
+        }
+      ]
+    },
+    "security_performance": {
+      "rate_limiting": 27,
+      "authentication": 7,
+      "authorization": 3,
+      "input_validation": 36,
+      "cors_config": 1,
+      "security_headers": 0,
+      "security_overhead": [
+        {
+          "file": "src/api/endpoints/auth.py",
+          "patterns": [
+            "jwt"
+          ]
+        }
+      ]
+    }
+  },
+  "recommendations": [
+    {
+      "category": "响应压缩",
+      "priority": "中",
+      "issue": "缺少响应压缩",
+      "suggestion": "启用Gzip压缩减少传输数据量",
+      "impact": "减少传输时间 40-60%"
+    },
+    {
+      "category": "响应缓存",
+      "priority": "高",
+      "issue": "缓存覆盖率不足",
+      "suggestion": "为频繁访问的API端点添加缓存层",
+      "impact": "提升响应速度 60-80%"
+    },
+    {
+      "category": "监控和日志",
+      "priority": "中",
+      "issue": "缺少性能监控",
+      "suggestion": "集成APM工具监控API响应时间和错误率",
+      "impact": "及时发现性能问题"
+    },
+    {
+      "category": "负载均衡",
+      "priority": "低",
+      "issue": "单点部署风险",
+      "suggestion": "配置负载均衡器实现水平扩展",
+      "impact": "提高系统可用性和处理能力"
+    },
+    {
+      "category": "CDN优化",
+      "priority": "低",
+      "issue": "静态资源加载慢",
+      "suggestion": "使用CDN加速静态资源访问",
+      "impact": "提升静态资源访问速度"
+    }
+  ],
+  "performance_score": {
+    "total_score": 85.0,
+    "grade": "A (良好)",
+    "individual_scores": {
+      "async_performance": 90,
+      "response_optimization": 75,
+      "concurrency_handling": 85,
+      "security_performance": 90
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "timestamp": "2025-10-08T07:25:23.630313",
+  "test_summary": {
+    "contract_tests": 5,
+    "integration_tests": 5,
+    "unit_tests": 4,
+    "total_files": 14,
+    "total_methods": 190,
+    "total_assertions": 645,
+    "total_fixtures": 53
+  },
+  "structure_summary": {
+    "python_files": 57,
+    "service_files": 15,
+    "model_files": 10,
+    "api_files": 7,
+    "task_files": 7
+  },
+  "syntax_check": {
+    "total_files": 57,
+    "passed_files": 54,
+    "failed_files": 3
+  }
+}

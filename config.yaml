@@ -1,0 +1,304 @@
+# 多交易所API集成限流和并发处理系统配置
+
+# Redis配置
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: null
+  connection_pool:
+    max_connections: 50
+    retry_on_timeout: true
+    socket_timeout: 5
+    socket_connect_timeout: 5
+
+# 交易所配置
+exchanges:
+  binance:
+    name: "Binance"
+    base_url: "https://api.binance.com"
+    api_key: "${BINANCE_API_KEY}"
+    api_secret: "${BINANCE_API_SECRET}"
+    rate_limits:
+      - type: "token_bucket"
+        capacity: 6000
+        rate: 100
+        window: 60
+      - type: "sliding_window"
+        limit: 10000
+        window: 10
+      - type: "sliding_window"
+        limit: 100000
+        window: 86400
+    max_connections: 20
+    timeout: 30
+    circuit_breaker:
+      failure_threshold: 5
+      recovery_timeout: 60
+      success_threshold: 3
+
+  coinbase:
+    name: "Coinbase Pro"
+    base_url: "https://api.pro.coinbase.com"
+    api_key: "${COINBASE_API_KEY}"
+    api_secret: "${COINBASE_API_SECRET}"
+    rate_limits:
+      - type: "token_bucket"
+        capacity: 600
+        rate: 10
+        window: 60
+      - type: "sliding_window"
+        limit: 50
+        window: 10
+    max_connections: 10
+    timeout: 30
+    circuit_breaker:
+      failure_threshold: 3
+      recovery_timeout: 30
+      success_threshold: 2
+
+  kraken:
+    name: "Kraken"
+    base_url: "https://api.kraken.com"
+    api_key: "${KRAKEN_API_KEY}"
+    api_secret: "${KRAKEN_API_SECRET}"
+    rate_limits:
+      - type: "leaky_bucket"
+        capacity: 100
+        leak_rate: 15
+        window: 60
+      - type: "sliding_window"
+        limit: 20
+        window: 60
+    max_connections: 15
+    timeout: 30
+    circuit_breaker:
+      failure_threshold: 4
+      recovery_timeout: 45
+      success_threshold: 2
+
+  huobi:
+    name: "Huobi"
+    base_url: "https://api.huobi.pro"
+    api_key: "${HUOBI_API_KEY}"
+    api_secret: "${HUOBI_API_SECRET}"
+    rate_limits:
+      - type: "token_bucket"
+        capacity: 18000
+        rate: 300
+        window: 60
+      - type: "sliding_window"
+        limit: 100
+        window: 1
+    max_connections: 25
+    timeout: 30
+    circuit_breaker:
+      failure_threshold: 6
+      recovery_timeout: 90
+      success_threshold: 3
+
+  okex:
+    name: "OKEx"
+    base_url: "https://www.okex.com"
+    api_key: "${OKEX_API_KEY}"
+    api_secret: "${OKEX_API_SECRET}"
+    rate_limits:
+      - type: "sliding_window"
+        limit: 60
+        window: 1
+      - type: "leaky_bucket"
+        capacity: 600
+        leak_rate: 60
+        window: 60
+    max_connections: 20
+    timeout: 30
+    circuit_breaker:
+      failure_threshold: 5
+      recovery_timeout: 60
+      success_threshold: 3
+
+# 队列管理配置
+queue_manager:
+  worker_pools:
+    priority:
+      size: 5
+      handler: "priority_task_handler"
+    delayed:
+      size: 2
+      handler: "delayed_task_handler"
+    dead_letter:
+      size: 1
+      handler: "dead_letter_handler"
+
+  persistence:
+    enabled: true
+    key_prefix: "queue_manager"
+    ttl: 86400
+
+  monitoring:
+    enabled: true
+    metrics_interval: 60
+    alert_threshold: 100
+
+# 重试配置
+retry_strategies:
+  default:
+    max_attempts: 3
+    strategy: "exponential_backoff"
+    base_delay: 1.0
+    max_delay: 60.0
+    multiplier: 2.0
+    jitter: true
+    retry_on: [429, 500, 502, 503, 504]
+    stop_on: [400, 401, 403, 404]
+
+  aggressive:
+    max_attempts: 5
+    strategy: "exponential_backoff"
+    base_delay: 0.5
+    max_delay: 30.0
+    multiplier: 1.5
+    jitter: true
+
+  conservative:
+    max_attempts: 2
+    strategy: "fixed_delay"
+    base_delay: 2.0
+    max_delay: 2.0
+    jitter: false
+
+# 降级配置
+fallback_strategies:
+  critical:
+    level: "emergency"
+    timeout: 5.0
+    cache_enabled: true
+    cache_ttl: 300
+    alternative_endpoints: []
+    fallback_function: "emergency_fallback"
+
+  important:
+    level: "full"
+    timeout: 10.0
+    cache_enabled: true
+    cache_ttl: 600
+    alternative_endpoints:
+      - "https://backup-api.example.com"
+    fallback_function: "full_fallback"
+
+  normal:
+    level: "partial"
+    timeout: 15.0
+    cache_enabled: true
+    cache_ttl: 300
+    fallback_function: "partial_fallback"
+
+  background:
+    level: "partial"
+    timeout: 30.0
+    cache_enabled: false
+    fallback_function: "background_fallback"
+
+# 监控和告警配置
+monitoring:
+  metrics:
+    enabled: true
+    collection_interval: 30
+    retention_days: 7
+    redis_key_prefix: "metrics"
+
+  alerts:
+    enabled: true
+    channels:
+      - type: "email"
+        recipients: ["admin@example.com"]
+        threshold: "error_rate > 0.1"
+      - type: "webhook"
+        url: "https://hooks.slack.com/..."
+        threshold: "circuit_breaker_open"
+      - type: "log"
+        level: "error"
+        threshold: "any"
+
+    thresholds:
+      error_rate: 0.1  # 10%
+      response_time: 5000  # 5秒
+      queue_size: 1000
+      circuit_breaker_failures: 5
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  handlers:
+    - type: "console"
+      level: "INFO"
+    - type: "file"
+      level: "DEBUG"
+      filename: "logs/exchange_api.log"
+      max_size: "100MB"
+      backup_count: 5
+    - type: "redis"
+      level: "WARNING"
+      key_prefix: "logs"
+      ttl: 86400
+
+# 安全配置
+security:
+  api_key_rotation:
+    enabled: true
+    interval: 86400  # 24小时
+    backup_keys: true
+
+  ip_whitelist:
+    enabled: true
+    default_ips: ["127.0.0.1", "::1"]
+
+  rate_limit_per_ip:
+    enabled: true
+    default_limit: 1000
+    window: 3600  # 1小时
+
+# 性能配置
+performance:
+  connection_pooling:
+    enabled: true
+    max_connections_per_exchange: 20
+    connection_timeout: 10
+    read_timeout: 30
+
+  caching:
+    enabled: true
+    default_ttl: 300  # 5分钟
+    max_cache_size: 10000
+    eviction_policy: "lru"
+
+  batch_processing:
+    enabled: true
+    batch_size: 50
+    batch_timeout: 1.0
+
+# 开发和测试配置
+development:
+  debug_mode: false
+  mock_apis: false
+  test_rate_limits: true
+  simulation_mode: false
+
+# 部署配置
+deployment:
+  environment: "production"
+  replicas: 3
+  resources:
+    memory: "1Gi"
+    cpu: "500m"
+
+  health_check:
+    enabled: true
+    endpoint: "/health"
+    interval: 30
+    timeout: 5
+
+  graceful_shutdown:
+    enabled: true
+    timeout: 30

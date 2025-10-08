@@ -1,0 +1,3182 @@
+{
+  "timestamp": "2025-10-08T07:29:16.532575",
+  "project_root": ".",
+  "analysis": {
+    "database_design": {
+      "models": {
+        "base": {
+          "classes": [
+            "BaseModel"
+          ],
+          "fields": [],
+          "relationships": [],
+          "indexes": [],
+          "constraints": [
+            "nullable=False",
+            "nullable=False",
+            "primary_key=True"
+          ],
+          "table_names": []
+        },
+        "position": {
+          "classes": [
+            "PositionSide",
+            "PositionStatus",
+            "PositionType",
+            "Position",
+            "PositionTrade"
+          ],
+          "fields": [
+            "symbol",
+            "side",
+            "amount",
+            "average_cost",
+            "current_price",
+            "position_id",
+            "exchange_position_id",
+            "status",
+            "position_type",
+            "is_active",
+            "unrealized_pnl",
+            "realized_pnl",
+            "total_pnl",
+            "unrealized_pnl_percent",
+            "realized_pnl_percent",
+            "risk_exposure",
+            "margin_used",
+            "margin_ratio",
+            "maintenance_margin",
+            "liquidation_price",
+            "leverage",
+            "initial_margin",
+            "maintenance_margin_requirement",
+            "stop_loss_price",
+            "take_profit_price",
+            "trailing_stop_amount",
+            "trailing_stop_percent",
+            "opened_at",
+            "closed_at",
+            "last_updated",
+            "exchange",
+            "exchange_fee_total",
+            "entry_value",
+            "current_value",
+            "cost_basis",
+            "total_fees",
+            "total_volume",
+            "trade_count",
+            "win_count",
+            "loss_count",
+            "metadata",
+            "tags",
+            "user_id",
+            "strategy_id",
+            "parent_position_id",
+            "trade_id",
+            "order_id",
+            "position_id",
+            "symbol",
+            "side",
+            "amount",
+            "price",
+            "quote_amount",
+            "fee",
+            "fee_asset",
+            "trade_type",
+            "pnl",
+            "exchange",
+            "timestamp",
+            "user_id",
+            "strategy_id"
+          ],
+          "relationships": [
+            "user",
+            "strategy",
+            "child_positions",
+            "trades",
+            "position",
+            "user",
+            "strategy"
+          ],
+          "indexes": [
+            "Index('idx_positions_symbol_status', 'symbol', 'status')",
+            "Index('idx_positions_user_status', 'user_id', 'status')",
+            "Index('idx_positions_strategy_status', 'strategy_id', 'status')",
+            "Index('idx_positions_opened_at', 'opened_at')",
+            "Index('idx_positions_exchange_symbol', 'exchange', 'symbol')",
+            "__table_args__ = (\n        Index('idx_positions_symbol_status', 'symbol', 'status')"
+          ],
+          "constraints": [
+            "unique=True",
+            "unique=True",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False"
+          ],
+          "table_names": [
+            "positions",
+            "position_trades"
+          ]
+        },
+        "trading_order": {
+          "classes": [
+            "OrderSide",
+            "OrderType",
+            "OrderStatus",
+            "TimeInForce",
+            "TradingOrder",
+            "OrderFill"
+          ],
+          "fields": [
+            "order_id",
+            "client_order_id",
+            "exchange_order_id",
+            "symbol",
+            "side",
+            "order_type",
+            "amount",
+            "price",
+            "filled_amount",
+            "remaining_amount",
+            "average_price",
+            "status",
+            "time_in_force",
+            "stop_loss_price",
+            "take_profit_price",
+            "trailing_stop_amount",
+            "trailing_stop_percent",
+            "iceberg_amount",
+            "visible_amount",
+            "min_amount",
+            "max_amount",
+            "expires_at",
+            "filled_at",
+            "cancelled_at",
+            "exchange",
+            "exchange_fee",
+            "exchange_fee_asset",
+            "error_code",
+            "error_message",
+            "retry_count",
+            "metadata",
+            "tags",
+            "strategy_id",
+            "user_id",
+            "parent_order_id",
+            "fill_id",
+            "trade_id",
+            "order_id",
+            "symbol",
+            "side",
+            "amount",
+            "price",
+            "quote_amount",
+            "fee",
+            "fee_asset",
+            "exchange",
+            "timestamp",
+            "user_id",
+            "strategy_id"
+          ],
+          "relationships": [
+            "strategy",
+            "user",
+            "child_orders",
+            "fills",
+            "order",
+            "user",
+            "strategy"
+          ],
+          "indexes": [
+            "Index('idx_trading_orders_symbol_status', 'symbol', 'status')",
+            "Index('idx_trading_orders_user_status', 'user_id', 'status')",
+            "Index('idx_trading_orders_strategy_status', 'strategy_id', 'status')",
+            "Index('idx_trading_orders_created_at', 'created_at')",
+            "Index('idx_trading_orders_exchange_symbol', 'exchange', 'symbol')",
+            "__table_args__ = (\n        Index('idx_trading_orders_symbol_status', 'symbol', 'status')"
+          ],
+          "constraints": [
+            "unique=True",
+            "unique=True",
+            "unique=True",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False"
+          ],
+          "table_names": [
+            "trading_orders",
+            "order_fills"
+          ]
+        },
+        "trading": {
+          "classes": [
+            "TradingStrategy",
+            "TradingOrder",
+            "Position"
+          ],
+          "fields": [
+            "name",
+            "description",
+            "strategy_type",
+            "status",
+            "llm_provider",
+            "llm_model",
+            "confidence_score",
+            "entry_price",
+            "position_size",
+            "stop_loss_price",
+            "take_profit_price",
+            "expires_at",
+            "created_by_id",
+            "symbol_id",
+            "order_id",
+            "symbol",
+            "side",
+            "order_type",
+            "amount",
+            "price",
+            "status",
+            "filled_amount",
+            "average_price",
+            "stop_loss_price",
+            "take_profit_price",
+            "timeout_seconds",
+            "filled_at",
+            "cancelled_at",
+            "exchange_id",
+            "strategy_id",
+            "user_id",
+            "symbol",
+            "side",
+            "amount",
+            "average_cost",
+            "current_price",
+            "unrealized_pnl",
+            "realized_pnl",
+            "risk_exposure",
+            "margin_used",
+            "opened_at",
+            "closed_at",
+            "exchange_id",
+            "user_id"
+          ],
+          "relationships": [
+            "creator",
+            "symbol",
+            "trading_orders",
+            "exchange",
+            "strategy",
+            "user",
+            "exchange",
+            "user"
+          ],
+          "indexes": [],
+          "constraints": [
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False"
+          ],
+          "table_names": [
+            "trading_strategies",
+            "trading_orders",
+            "positions"
+          ]
+        },
+        "user": {
+          "classes": [
+            "User"
+          ],
+          "fields": [
+            "username",
+            "email",
+            "password_hash",
+            "api_key",
+            "api_secret",
+            "timezone",
+            "language",
+            "risk_level",
+            "is_active",
+            "is_admin",
+            "last_login"
+          ],
+          "relationships": [
+            "trading_strategies",
+            "trading_orders",
+            "positions"
+          ],
+          "indexes": [],
+          "constraints": [
+            "unique=True",
+            "unique=True",
+            "unique=True",
+            "nullable=False",
+            "nullable=False"
+          ],
+          "table_names": [
+            "users"
+          ]
+        },
+        "market": {
+          "classes": [
+            "Exchange",
+            "TradingSymbol",
+            "KlineData",
+            "TechnicalAnalysis"
+          ],
+          "fields": [
+            "name",
+            "code",
+            "api_base_url",
+            "api_version",
+            "is_testnet",
+            "rate_limit_requests_per_minute",
+            "rate_limit_orders_per_second",
+            "rate_limit_weight_per_minute",
+            "is_active",
+            "last_heartbeat",
+            "status",
+            "symbol",
+            "base_asset",
+            "quote_asset",
+            "status",
+            "is_spot_trading",
+            "is_margin_trading",
+            "min_qty",
+            "max_qty",
+            "step_size",
+            "min_price",
+            "max_price",
+            "tick_size",
+            "time",
+            "symbol_id",
+            "exchange_id",
+            "open_price",
+            "high_price",
+            "low_price",
+            "close_price",
+            "volume",
+            "quote_volume",
+            "sma_20",
+            "ema_12",
+            "ema_26",
+            "rsi",
+            "macd",
+            "macd_signal",
+            "bollinger_upper",
+            "bollinger_lower",
+            "symbol_id",
+            "exchange_id",
+            "timeframe",
+            "signal_type",
+            "signal_strength",
+            "support_level",
+            "resistance_level",
+            "entry_conditions",
+            "exit_conditions",
+            "risk_factors",
+            "analysis_version",
+            "confidence_score"
+          ],
+          "relationships": [
+            "kline_data",
+            "technical_analysis",
+            "trading_orders",
+            "positions",
+            "trading_strategies",
+            "kline_data",
+            "technical_analysis",
+            "symbol",
+            "exchange",
+            "technical_analysis",
+            "symbol",
+            "exchange",
+            "kline_data"
+          ],
+          "indexes": [],
+          "constraints": [
+            "unique=True",
+            "unique=True",
+            "unique=True",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "primary_key=True",
+            "primary_key=True",
+            "primary_key=True"
+          ],
+          "table_names": [
+            "exchanges",
+            "trading_symbols",
+            "kline_data",
+            "technical_analysis"
+          ]
+        },
+        "news": {
+          "classes": [
+            "NewsData",
+            "NewsSummary"
+          ],
+          "fields": [
+            "title",
+            "content",
+            "url",
+            "source",
+            "author",
+            "relevance_score",
+            "related_symbols",
+            "sentiment",
+            "sentiment_score",
+            "published_at",
+            "collected_at",
+            "language",
+            "word_count",
+            "hash",
+            "summary_text",
+            "key_points",
+            "market_impact",
+            "llm_provider",
+            "llm_model",
+            "generation_confidence",
+            "news_count",
+            "time_period_hours",
+            "expires_at"
+          ],
+          "relationships": [
+            "news_summaries"
+          ],
+          "indexes": [],
+          "constraints": [
+            "unique=True",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False"
+          ],
+          "table_names": [
+            "news_data",
+            "news_summaries"
+          ]
+        },
+        "technical_analysis": {
+          "classes": [
+            "TechnicalAnalysis",
+            "TechnicalIndicator",
+            "KlineData",
+            "AnalysisSession",
+            "StrategyTemplate"
+          ],
+          "fields": [
+            "symbol",
+            "exchange",
+            "timeframe",
+            "signal_type",
+            "signal_strength",
+            "confidence_score",
+            "current_price",
+            "support_level",
+            "resistance_level",
+            "stop_loss_level",
+            "take_profit_level",
+            "indicators",
+            "trend_analysis",
+            "pattern_recognition",
+            "entry_conditions",
+            "exit_conditions",
+            "risk_factors",
+            "position_sizing",
+            "analysis_version",
+            "analysis_period_hours",
+            "data_points_count",
+            "analysis_timestamp",
+            "expires_at",
+            "trading_symbol_id",
+            "name",
+            "symbol",
+            "timeframe",
+            "value",
+            "previous_value",
+            "change",
+            "change_percent",
+            "parameters",
+            "signal",
+            "signal_strength",
+            "category",
+            "subcategory",
+            "timestamp",
+            "timestamp",
+            "symbol_id",
+            "exchange_id",
+            "open_price",
+            "high_price",
+            "low_price",
+            "close_price",
+            "volume",
+            "quote_volume",
+            "trades_count",
+            "sma_20",
+            "ema_12",
+            "ema_26",
+            "rsi",
+            "macd",
+            "macd_signal",
+            "macd_histogram",
+            "bollinger_upper",
+            "bollinger_middle",
+            "bollinger_lower",
+            "price_change",
+            "price_change_percent",
+            "volume_change",
+            "volume_change_percent",
+            "is_anomaly",
+            "data_quality_score",
+            "interpolation_used",
+            "session_id",
+            "analysis_type",
+            "status",
+            "symbols",
+            "timeframes",
+            "analysis_period_hours",
+            "confidence_threshold",
+            "started_at",
+            "completed_at",
+            "execution_time_seconds",
+            "total_analyses",
+            "successful_analyses",
+            "failed_analyses",
+            "error_message",
+            "error_details",
+            "llm_provider",
+            "llm_model",
+            "total_tokens_used",
+            "total_cost_usd",
+            "name",
+            "description",
+            "category",
+            "strategy_type",
+            "entry_conditions",
+            "exit_conditions",
+            "risk_management",
+            "required_indicators",
+            "indicator_parameters",
+            "total_trades",
+            "winning_trades",
+            "profit_factor",
+            "max_drawdown",
+            "sharpe_ratio",
+            "is_active",
+            "is_default",
+            "min_confidence_threshold",
+            "last_used_at"
+          ],
+          "relationships": [],
+          "indexes": [],
+          "constraints": [
+            "unique=True",
+            "unique=True",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "primary_key=True",
+            "primary_key=True",
+            "primary_key=True"
+          ],
+          "table_names": [
+            "technical_analysis",
+            "technical_indicators",
+            "kline_data",
+            "analysis_sessions",
+            "strategy_templates"
+          ]
+        },
+        "trading_strategy": {
+          "classes": [
+            "StrategyType",
+            "StrategyStatus",
+            "RiskLevel",
+            "TimeHorizon",
+            "TradingStrategy",
+            "StrategyAnalysis",
+            "StrategyPerformance"
+          ],
+          "fields": [
+            "name",
+            "description",
+            "strategy_type",
+            "status",
+            "llm_provider",
+            "llm_model",
+            "confidence_score",
+            "final_recommendation",
+            "entry_price",
+            "stop_loss_price",
+            "take_profit_price",
+            "position_size_percent",
+            "risk_level",
+            "time_horizon",
+            "strategy_style",
+            "market_analysis",
+            "risk_assessment",
+            "execution_plan",
+            "technical_signals",
+            "news_analysis",
+            "analysis_types",
+            "analysis_parameters",
+            "custom_parameters",
+            "expires_at",
+            "executed_at",
+            "symbol_id",
+            "created_by",
+            "strategy_id",
+            "analysis_type",
+            "analysis_data",
+            "confidence_score",
+            "analyzer_version",
+            "analysis_duration_ms",
+            "strategy_id",
+            "entry_price",
+            "exit_price",
+            "current_price",
+            "unrealized_pnl_percent",
+            "realized_pnl_percent",
+            "status",
+            "entry_time",
+            "exit_time",
+            "last_updated"
+          ],
+          "relationships": [
+            "symbol",
+            "creator",
+            "orders",
+            "strategy",
+            "strategy",
+            "analysis_results",
+            "performance_records"
+          ],
+          "indexes": [],
+          "constraints": [
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "nullable=False",
+            "primary_key=True",
+            "primary_key=True",
+            "primary_key=True"
+          ],
+          "table_names": [
+            "trading_strategies",
+            "strategy_analysis",
+            "strategy_performance"
+          ]
+        }
+      },
+      "relationships": [
+        {
+          "source_model": "position",
+          "relationship_name": "user",
+          "type": "relationship"
+        },
+        {
+          "source_model": "position",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "position",
+          "relationship_name": "child_positions",
+          "type": "relationship"
+        },
+        {
+          "source_model": "position",
+          "relationship_name": "trades",
+          "type": "relationship"
+        },
+        {
+          "source_model": "position",
+          "relationship_name": "position",
+          "type": "relationship"
+        },
+        {
+          "source_model": "position",
+          "relationship_name": "user",
+          "type": "relationship"
+        },
+        {
+          "source_model": "position",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "user",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "child_orders",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "fills",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "order",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "user",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_order",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "creator",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "symbol",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "trading_orders",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "exchange",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "user",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "exchange",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading",
+          "relationship_name": "user",
+          "type": "relationship"
+        },
+        {
+          "source_model": "user",
+          "relationship_name": "trading_strategies",
+          "type": "relationship"
+        },
+        {
+          "source_model": "user",
+          "relationship_name": "trading_orders",
+          "type": "relationship"
+        },
+        {
+          "source_model": "user",
+          "relationship_name": "positions",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "kline_data",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "technical_analysis",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "trading_orders",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "positions",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "trading_strategies",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "kline_data",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "technical_analysis",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "symbol",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "exchange",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "technical_analysis",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "symbol",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "exchange",
+          "type": "relationship"
+        },
+        {
+          "source_model": "market",
+          "relationship_name": "kline_data",
+          "type": "relationship"
+        },
+        {
+          "source_model": "news",
+          "relationship_name": "news_summaries",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "symbol",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "creator",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "orders",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "strategy",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "analysis_results",
+          "type": "relationship"
+        },
+        {
+          "source_model": "trading_strategy",
+          "relationship_name": "performance_records",
+          "type": "relationship"
+        }
+      ],
+      "indexes": [
+        {
+          "model": "base",
+          "table": "base",
+          "index_count": 0,
+          "coverage": 0
+        },
+        {
+          "model": "position",
+          "table": "positions",
+          "index_count": 6,
+          "coverage": 18.0327868852459
+        },
+        {
+          "model": "trading_order",
+          "table": "trading_orders",
+          "index_count": 6,
+          "coverage": 22.448979591836736
+        },
+        {
+          "model": "trading",
+          "table": "trading_strategies",
+          "index_count": 0,
+          "coverage": 0.0
+        },
+        {
+          "model": "user",
+          "table": "users",
+          "index_count": 0,
+          "coverage": 0.0
+        },
+        {
+          "model": "market",
+          "table": "exchanges",
+          "index_count": 0,
+          "coverage": 0.0
+        },
+        {
+          "model": "news",
+          "table": "news_data",
+          "index_count": 0,
+          "coverage": 0.0
+        },
+        {
+          "model": "technical_analysis",
+          "table": "technical_analysis",
+          "index_count": 0,
+          "coverage": 0.0
+        },
+        {
+          "model": "trading_strategy",
+          "table": "trading_strategies",
+          "index_count": 0,
+          "coverage": 0.0
+        }
+      ],
+      "queries": [],
+      "optimization_opportunities": [],
+      "index_coverage": {
+        "base": {
+          "total_fields": 0,
+          "indexed_fields": 0,
+          "coverage_percent": 0,
+          "indexes": [],
+          "missing_indexes": []
+        },
+        "position": {
+          "total_fields": 61,
+          "indexed_fields": 11,
+          "coverage_percent": 18.0,
+          "indexes": [
+            "Index('idx_positions_symbol_status', 'symbol', 'status')",
+            "Index('idx_positions_user_status', 'user_id', 'status')",
+            "Index('idx_positions_strategy_status', 'strategy_id', 'status')",
+            "Index('idx_positions_opened_at', 'opened_at')",
+            "Index('idx_positions_exchange_symbol', 'exchange', 'symbol')",
+            "__table_args__ = (\n        Index('idx_positions_symbol_status', 'symbol', 'status')"
+          ],
+          "missing_indexes": [
+            "unrealized_pnl",
+            "trailing_stop_percent",
+            "is_active",
+            "cost_basis",
+            "stop_loss_price",
+            "total_fees",
+            "parent_position_id",
+            "leverage",
+            "trade_id",
+            "amount",
+            "realized_pnl_percent",
+            "position_id",
+            "price",
+            "pnl",
+            "entry_value",
+            "loss_count",
+            "initial_margin",
+            "quote_amount",
+            "trade_type",
+            "maintenance_margin",
+            "take_profit_price",
+            "fee_asset",
+            "position_type",
+            "timestamp",
+            "exchange_fee_total",
+            "metadata",
+            "fee",
+            "trailing_stop_amount",
+            "risk_exposure",
+            "tags",
+            "order_id",
+            "last_updated",
+            "trade_count",
+            "current_price",
+            "side",
+            "average_cost",
+            "total_volume",
+            "margin_used",
+            "win_count",
+            "realized_pnl",
+            "margin_ratio",
+            "closed_at",
+            "exchange_position_id",
+            "current_value",
+            "total_pnl",
+            "liquidation_price",
+            "unrealized_pnl_percent",
+            "maintenance_margin_requirement"
+          ]
+        },
+        "trading_order": {
+          "total_fields": 49,
+          "indexed_fields": 11,
+          "coverage_percent": 22.4,
+          "indexes": [
+            "Index('idx_trading_orders_symbol_status', 'symbol', 'status')",
+            "Index('idx_trading_orders_user_status', 'user_id', 'status')",
+            "Index('idx_trading_orders_strategy_status', 'strategy_id', 'status')",
+            "Index('idx_trading_orders_created_at', 'created_at')",
+            "Index('idx_trading_orders_exchange_symbol', 'exchange', 'symbol')",
+            "__table_args__ = (\n        Index('idx_trading_orders_symbol_status', 'symbol', 'status')"
+          ],
+          "missing_indexes": [
+            "trailing_stop_percent",
+            "trade_id",
+            "exchange_order_id",
+            "stop_loss_price",
+            "remaining_amount",
+            "filled_amount",
+            "expires_at",
+            "amount",
+            "max_amount",
+            "fill_id",
+            "price",
+            "error_code",
+            "quote_amount",
+            "iceberg_amount",
+            "client_order_id",
+            "retry_count",
+            "take_profit_price",
+            "order_type",
+            "average_price",
+            "fee_asset",
+            "timestamp",
+            "metadata",
+            "exchange_fee_asset",
+            "trailing_stop_amount",
+            "fee",
+            "tags",
+            "order_id",
+            "exchange_fee",
+            "side",
+            "time_in_force",
+            "min_amount",
+            "visible_amount",
+            "filled_at",
+            "parent_order_id",
+            "cancelled_at",
+            "error_message"
+          ]
+        },
+        "trading": {
+          "total_fields": 44,
+          "indexed_fields": 0,
+          "coverage_percent": 0.0,
+          "indexes": [],
+          "missing_indexes": [
+            "timeout_seconds",
+            "unrealized_pnl",
+            "strategy_id",
+            "strategy_type",
+            "stop_loss_price",
+            "filled_amount",
+            "expires_at",
+            "llm_model",
+            "exchange_id",
+            "amount",
+            "status",
+            "position_size",
+            "price",
+            "created_by_id",
+            "take_profit_price",
+            "order_type",
+            "average_price",
+            "name",
+            "risk_exposure",
+            "order_id",
+            "user_id",
+            "current_price",
+            "side",
+            "cancelled_at",
+            "description",
+            "average_cost",
+            "margin_used",
+            "llm_provider",
+            "realized_pnl",
+            "closed_at",
+            "symbol_id",
+            "confidence_score",
+            "entry_price",
+            "filled_at",
+            "opened_at",
+            "symbol"
+          ]
+        },
+        "user": {
+          "total_fields": 11,
+          "indexed_fields": 0,
+          "coverage_percent": 0.0,
+          "indexes": [],
+          "missing_indexes": [
+            "email",
+            "is_active",
+            "language",
+            "timezone",
+            "last_login",
+            "risk_level",
+            "api_secret",
+            "is_admin",
+            "password_hash",
+            "api_key",
+            "username"
+          ]
+        },
+        "market": {
+          "total_fields": 52,
+          "indexed_fields": 0,
+          "coverage_percent": 0.0,
+          "indexes": [],
+          "missing_indexes": [
+            "rsi",
+            "is_active",
+            "sma_20",
+            "open_price",
+            "exchange_id",
+            "ema_12",
+            "bollinger_lower",
+            "tick_size",
+            "timeframe",
+            "low_price",
+            "support_level",
+            "rate_limit_weight_per_minute",
+            "last_heartbeat",
+            "status",
+            "risk_factors",
+            "macd_signal",
+            "volume",
+            "resistance_level",
+            "max_price",
+            "time",
+            "name",
+            "signal_type",
+            "step_size",
+            "exit_conditions",
+            "ema_26",
+            "high_price",
+            "signal_strength",
+            "is_testnet",
+            "close_price",
+            "code",
+            "rate_limit_requests_per_minute",
+            "quote_volume",
+            "entry_conditions",
+            "symbol_id",
+            "api_base_url",
+            "is_margin_trading",
+            "min_qty",
+            "max_qty",
+            "bollinger_upper",
+            "macd",
+            "rate_limit_orders_per_second",
+            "confidence_score",
+            "base_asset",
+            "symbol",
+            "api_version",
+            "quote_asset",
+            "analysis_version",
+            "min_price",
+            "is_spot_trading"
+          ]
+        },
+        "news": {
+          "total_fields": 23,
+          "indexed_fields": 0,
+          "coverage_percent": 0.0,
+          "indexes": [],
+          "missing_indexes": [
+            "market_impact",
+            "word_count",
+            "relevance_score",
+            "title",
+            "language",
+            "sentiment_score",
+            "time_period_hours",
+            "expires_at",
+            "news_count",
+            "sentiment",
+            "llm_model",
+            "related_symbols",
+            "published_at",
+            "author",
+            "collected_at",
+            "content",
+            "llm_provider",
+            "generation_confidence",
+            "key_points",
+            "url",
+            "hash",
+            "summary_text",
+            "source"
+          ]
+        },
+        "technical_analysis": {
+          "total_fields": 101,
+          "indexed_fields": 0,
+          "coverage_percent": 0.0,
+          "indexes": [],
+          "missing_indexes": [
+            "is_active",
+            "strategy_type",
+            "total_cost_usd",
+            "expires_at",
+            "total_analyses",
+            "exchange_id",
+            "ema_12",
+            "timeframe",
+            "profit_factor",
+            "price_change",
+            "status",
+            "session_id",
+            "data_points_count",
+            "change_percent",
+            "macd_signal",
+            "confidence_threshold",
+            "analysis_type",
+            "trend_analysis",
+            "signal_type",
+            "take_profit_level",
+            "subcategory",
+            "pattern_recognition",
+            "started_at",
+            "description",
+            "required_indicators",
+            "close_price",
+            "symbols",
+            "successful_analyses",
+            "quote_volume",
+            "bollinger_upper",
+            "macd",
+            "completed_at",
+            "trading_symbol_id",
+            "signal",
+            "volume_change",
+            "symbol",
+            "analysis_version",
+            "error_message",
+            "timeframes",
+            "rsi",
+            "interpolation_used",
+            "sma_20",
+            "indicator_parameters",
+            "open_price",
+            "llm_model",
+            "position_sizing",
+            "bollinger_lower",
+            "parameters",
+            "stop_loss_level",
+            "support_level",
+            "low_price",
+            "risk_factors",
+            "data_quality_score",
+            "macd_histogram",
+            "price_change_percent",
+            "trades_count",
+            "volume",
+            "is_anomaly",
+            "error_details",
+            "total_trades",
+            "resistance_level",
+            "name",
+            "total_tokens_used",
+            "volume_change_percent",
+            "timestamp",
+            "risk_management",
+            "exit_conditions",
+            "category",
+            "execution_time_seconds",
+            "indicators",
+            "exchange",
+            "ema_26",
+            "last_used_at",
+            "current_price",
+            "change",
+            "high_price",
+            "signal_strength",
+            "is_default",
+            "min_confidence_threshold",
+            "sharpe_ratio",
+            "llm_provider",
+            "analysis_period_hours",
+            "failed_analyses",
+            "max_drawdown",
+            "previous_value",
+            "entry_conditions",
+            "symbol_id",
+            "analysis_timestamp",
+            "confidence_score",
+            "value",
+            "winning_trades",
+            "bollinger_middle"
+          ]
+        },
+        "trading_strategy": {
+          "total_fields": 43,
+          "indexed_fields": 0,
+          "coverage_percent": 0.0,
+          "indexes": [],
+          "missing_indexes": [
+            "strategy_style",
+            "risk_assessment",
+            "strategy_id",
+            "strategy_type",
+            "news_analysis",
+            "stop_loss_price",
+            "market_analysis",
+            "analyzer_version",
+            "expires_at",
+            "exit_time",
+            "llm_model",
+            "entry_time",
+            "risk_level",
+            "realized_pnl_percent",
+            "executed_at",
+            "status",
+            "analysis_parameters",
+            "analysis_data",
+            "exit_price",
+            "created_by",
+            "analysis_type",
+            "analysis_types",
+            "take_profit_price",
+            "custom_parameters",
+            "time_horizon",
+            "name",
+            "technical_signals",
+            "last_updated",
+            "current_price",
+            "analysis_duration_ms",
+            "description",
+            "position_size_percent",
+            "llm_provider",
+            "final_recommendation",
+            "symbol_id",
+            "confidence_score",
+            "entry_price",
+            "execution_plan",
+            "unrealized_pnl_percent"
+          ]
+        }
+      },
+      "query_patterns": {
+        "frequent_queries": [
+          {
+            "pattern": ".get('success')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('error_code', 'CANCEL_FAILED')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('error_message', '取消订单失败')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(f\"order_status:{order_id}\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('success')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('order_id')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('filled_amount')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('average_price', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('fee', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('fee_asset')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('filled_amount')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('average_price')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('fee')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('error_code', 'EXECUTION_FAILED')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('error_message', '订单执行失败')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('status')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('filled', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('average_price', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('reason', 'Unknown')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('price', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(quote_currency, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('free', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(base_currency, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('free', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('price_change_24h_percent', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bids', [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bids')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('asks', [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('asks')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(source, 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(sentiment, 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"risk_level\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(request.symbol)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(request.symbol, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"long_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"short_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"news_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_direction', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_strength', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sentiment', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('market_impact', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_direction', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_strength', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility_level', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('key_indicators', {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('rsi', 'N/A')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('key_indicators', {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_signal')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('key_indicators', {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_position', 'N/A')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('key_events', [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('overall_sentiment', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sentiment_score', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('market_impact', '未知')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"risk_level\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"long_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"short_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"news_analysis\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"long_analysis\", 0.4)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"short_analysis\", 0.4)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_direction\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_strength\", 0.5)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_analysis\", 0.15)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"sentiment\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"confidence_score\", 0.5)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"news_analysis\", 0.05)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"indicators\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_direction\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_strength\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"volatility_level\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"rsi\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"macd_histogram\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"sentiment\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"sentiment_score\", 0.5)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"key_events\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_impact\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_direction\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"sentiment\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"bollinger_upper\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"bollinger_middle\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"bollinger_lower\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"core_summary\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"key_impact\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"sentiment\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"mentioned_cryptos\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"importance_level\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"confidence_score\", 0.5)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"overall_sentiment\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"risk_assessment\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"key_themes\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"sentiment\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"importance_level\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(cache_key)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(source[\"url\"], timeout=30)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"link\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"author\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"url\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"author\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"hash\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('symbol')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('side')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('amount')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('amount', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('price', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('liquidity_score')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('liquidity_score', 1)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(cache_key)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility', 0.05)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('liquidity_score', 1.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(cache_key)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(timeframe, 60)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"timeframe\", \"1h\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_signals\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_data\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"config\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"indicators\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_signals\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"support_resistance\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"support_levels\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"resistance_levels\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"timeframe\", \"1h\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('rsi', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('rsi')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_line', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_line')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_signal', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_signal')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_histogram', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_histogram')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_upper', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_upper')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_middle', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_middle')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_lower', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_lower')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_20', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_20')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_50', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_50')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_12', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_12')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_26', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_26')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volume_ratio', 1.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('atr', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('atr')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_direction\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_strength', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"volatility_level\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_sentiment\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"type\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"indicator\", \"Unknown\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"reason\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"strength\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(cache_key)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('price', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"timeframe\", \"1h\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"analysis_period_days\", 7)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"confidence_threshold\", 0.7)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"max_position_size\", 20.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"user_id\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"session_id\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"request_id\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"timeframe\", \"1h\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"analysis_period_days\", 7)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"confidence_threshold\", 0.7)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"max_position_size\", 20.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"timeframe\", \"1h\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_signals\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"short_specific_factors\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_data\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"config\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"indicators\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"technical_signals\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"support_resistance\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"support_levels\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"resistance_levels\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"timeframe\", \"1h\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('rsi', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('rsi')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_line', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_line')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_signal', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_signal')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_histogram', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_histogram')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_upper', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_upper')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_middle', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_middle')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_lower', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('bollinger_lower')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_20', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_20')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_50', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_50')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_12', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_12')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_26', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('ema_26')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volume_ratio', 1.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('atr', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('atr')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"trend_direction\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_strength', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"volatility_level\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_sentiment\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"indicators\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"market_analysis\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('rsi', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"support_resistance\", {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"resistance_levels\", [])",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volume_ratio', 1.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('trend_direction', 'neutral')",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('macd_histogram', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_20', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sma_50', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"type\", \"neutral\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"indicator\", \"Unknown\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"reason\", \"\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"strength\", \"medium\")",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(\"current_price\", 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sharpe_ratio', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('win_rate', 0.5)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('avg_win', 1.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('avg_loss', 1.0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sharpe_ratio', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility', 0.2)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility', 0.2)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('volatility', 0.2)",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get(strategy_id, {})",
+            "type": "frequent",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".get('sharpe_ratio', 0)",
+            "type": "frequent",
+            "file": "service_file"
+          }
+        ],
+        "potential_slow_queries": [],
+        "join_operations": [
+          {
+            "pattern": ".join(validation_result.errors)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(aggregated_signal.conflicting_signals)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(aggregated_signal.supporting_analyses)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(detailed_analyses)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(key_events[:3])",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(long_sources)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(short_sources)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(content_parts)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(f'{s:.2f}' for s in support_levels[:3])",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(f'{r:.2f}' for r in resistance_levels[:3])",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(signal_texts)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(validation_result.warnings)",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(f'{s:.2f}' for s in support_levels[:3])",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(f'{r:.2f}' for r in resistance_levels[:3])",
+            "type": "join",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".join(signal_texts)",
+            "type": "join",
+            "file": "service_file"
+          }
+        ],
+        "filter_operations": [
+          {
+            "pattern": ".filter(\n                TradingOrder.order_id == order_id\n            )",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                TradingOrder.order_id == order_id\n            )",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(TradingOrder.user_id == user_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(TradingOrder.symbol == symbol)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(TradingOrder.status == status)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                        TradingOrder.order_id == order_id\n                    )",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                and_(\n                    Position.user_id == uuid.UUID(order_request.user_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n            and_(\n                Position.user_id == uuid.UUID(user_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n            and_(\n                TradingOrder.user_id == uuid.UUID(user_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                    TradingSymbol.symbol == symbol\n                )",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                            KlineDataModel.timestamp == kline.timestamp,\n                            KlineDataModel.symbol_id == trading_symbol.id\n                        )",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                Position.id == uuid.UUID(position_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                        and_(\n                            Position.id.in_(position_ids)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                        and_(\n                            Position.id.in_(position_ids)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n            Position.status == PositionStatus.OPEN.value\n        )",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(Position.user_id == uuid.UUID(user_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                TradingStrategy.id == uuid.UUID(strategy_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                        and_(\n                            TradingStrategy.status == StrategyStatus.ACTIVE.value,\n                            TradingStrategy.created_at > datetime.utcnow()",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n                and_(\n                    Position.strategy_id == uuid.UUID(signal.strategy_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": ".filter(\n            and_(\n                Position.strategy_id == uuid.UUID(strategy_id)",
+            "type": "filter",
+            "file": "service_file"
+          },
+          {
+            "pattern": "and_(",
+            "type": "filter",
+            "file": "service_file"
+          }
+        ]
+      },
+      "optimization_suggestions": [
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "base",
+          "issue": "索引覆盖率过低 (0%)",
+          "suggestion": "为字段添加索引: ",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "position",
+          "issue": "索引覆盖率过低 (18.0%)",
+          "suggestion": "为字段添加索引: unrealized_pnl, trailing_stop_percent, is_active, cost_basis, stop_loss_price",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "trading_order",
+          "issue": "索引覆盖率过低 (22.4%)",
+          "suggestion": "为字段添加索引: trailing_stop_percent, trade_id, exchange_order_id, stop_loss_price, remaining_amount",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "trading",
+          "issue": "索引覆盖率过低 (0.0%)",
+          "suggestion": "为字段添加索引: timeout_seconds, unrealized_pnl, strategy_id, strategy_type, stop_loss_price",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "user",
+          "issue": "索引覆盖率过低 (0.0%)",
+          "suggestion": "为字段添加索引: email, is_active, language, timezone, last_login",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "market",
+          "issue": "索引覆盖率过低 (0.0%)",
+          "suggestion": "为字段添加索引: rsi, is_active, sma_20, open_price, exchange_id",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "news",
+          "issue": "索引覆盖率过低 (0.0%)",
+          "suggestion": "为字段添加索引: market_impact, word_count, relevance_score, title, language",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "technical_analysis",
+          "issue": "索引覆盖率过低 (0.0%)",
+          "suggestion": "为字段添加索引: is_active, strategy_type, total_cost_usd, expires_at, total_analyses",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "索引优化",
+          "priority": "高",
+          "model": "trading_strategy",
+          "issue": "索引覆盖率过低 (0.0%)",
+          "suggestion": "为字段添加索引: strategy_style, risk_assessment, strategy_id, strategy_type, news_analysis",
+          "impact": "显著提升查询性能"
+        },
+        {
+          "category": "数据库配置",
+          "priority": "中",
+          "issue": "需要数据库连接池配置",
+          "suggestion": "配置合适的连接池大小和超时设置",
+          "impact": "提升并发性能"
+        },
+        {
+          "category": "查询缓存",
+          "priority": "高",
+          "issue": "缺少查询缓存机制",
+          "suggestion": "实现Redis查询缓存，缓存频繁查询结果",
+          "impact": "大幅提升重复查询性能"
+        },
+        {
+          "category": "数据库分区",
+          "priority": "低",
+          "issue": "大表缺少分区策略",
+          "suggestion": "对时间序列数据进行分区，提升查询效率",
+          "impact": "优化大数据量查询"
+        }
+      ]
+    },
+    "caching": {
+      "redis_usage": 99,
+      "cache_files": 1,
+      "cache_strategies": [],
+      "optimization_opportunities": [
+        {
+          "category": "缓存架构",
+          "priority": "中",
+          "issue": "缓存架构不完善",
+          "suggestion": "建立统一的缓存管理架构",
+          "impact": "提高缓存利用率和一致性"
+        }
+      ],
+      "redis_files": 0,
+      "cache_patterns": [
+        {
+          "file": "src/main.py",
+          "patterns": []
+        },
+        {
+          "file": "src/tasks/news_tasks.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        },
+        {
+          "file": "src/tasks/order_monitor.py",
+          "patterns": []
+        },
+        {
+          "file": "src/core/logging.py",
+          "patterns": []
+        },
+        {
+          "file": "src/core/news_events.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        },
+        {
+          "file": "src/core/__init__.py",
+          "patterns": []
+        },
+        {
+          "file": "src/core/exceptions.py",
+          "patterns": []
+        },
+        {
+          "file": "src/core/short_strategy_logging.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        },
+        {
+          "file": "src/core/cache.py",
+          "patterns": []
+        },
+        {
+          "file": "src/services/order_manager.py",
+          "patterns": [
+            "cache.get"
+          ]
+        },
+        {
+          "file": "src/services/news_collector.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        },
+        {
+          "file": "src/services/risk_manager.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        },
+        {
+          "file": "src/services/exchange_data_collector.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        },
+        {
+          "file": "src/services/position_monitor.py",
+          "patterns": [
+            "cache.get",
+            "cache.set"
+          ]
+        }
+      ]
+    }
+  },
+  "recommendations": [],
+  "optimization_score": {
+    "total_score": 77.5,
+    "grade": "B (一般)",
+    "individual_scores": {
+      "index_optimization": 60,
+      "query_optimization": 85,
+      "caching_strategy": 85,
+      "schema_design": 80
+    }
+  }
+}

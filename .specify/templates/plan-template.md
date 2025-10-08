@@ -31,7 +31,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+### Required Gates (based on Crypto AI Trading Constitution v1.1.0):
+
+- [ ] **简化优先检查**: 设计是否避免过度抽象？是否选择最简实现方案？
+- [ ] **测试先行检查**: 是否制定了完整的测试策略？是否包含单元测试和集成测试？
+- [ ] **集成优先检查**: 是否考虑了与现有系统的集成？API设计是否符合标准化？
+- [ ] **模块复用检查**: 是否识别了可复用的通用模块？接口设计是否稳定？
+- [ ] **高内聚低耦合检查**: 模块职责是否单一？依赖关系是否最小化？
+- [ ] **代码可读性检查**: 是否采用了清晰的命名规范？复杂逻辑是否有文档说明？
+- [ ] **系统架构检查**: 架构是否分层清晰？是否支持扩展和高可用？
 
 ## Project Structure
 

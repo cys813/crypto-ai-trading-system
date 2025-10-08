@@ -1,0 +1,314 @@
+name: Constitution Compliance Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 每天UTC时间02:00运行
+    - cron: '0 2 * * *'
+
+jobs:
+  constitution-check:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install astroid pytest pytest-cov
+
+    - name: Run Constitution Audit
+      run: |
+        cd backend
+        python -m src.constitution.auditor
+      env:
+        PYTHONPATH: ${{ github.workspace }}/backend/src
+
+    - name: Upload Constitution Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: constitution-report-${{ matrix.python-version }}
+        path: docs/reports/constitution_audit_report.md
+        retention-days: 30
+
+    - name: Check Critical Issues
+      run: |
+        # 检查是否有致命或严重问题
+        if [ -f "docs/reports/constitution_audit_report.md" ]; then
+          critical_count=$(grep -c "🚨" docs/reports/constitution_audit_report.md || echo "0")
+          violation_count=$(grep -c "❌" docs/reports/constitution_audit_report.md || echo "0")
+
+          if [ "$critical_count" -gt 0 ]; then
+            echo "❌ 发现 $critical_count 个致命合规性问题"
+            exit 1
+          elif [ "$violation_count" -gt 5 ]; then
+            echo "❌ 发现 $violation_count 个严重合规问题，超过阈值"
+            exit 1
+          else
+            echo "✅ 合规性检查通过"
+          fi
+        fi
+
+    - name: Create Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'docs', 'reports', 'constitution_audit_report.md');
+
+          if (fs.existsSync(reportPath)) {
+            const report = fs.readFileSync(reportPath, 'utf8');
+
+            // 提取关键信息
+            const lines = report.split('\n');
+            const summary = lines.slice(0, 20).join('\n'); // 取前20行
+
+            const comment = `
+            ## 📋 宪法合规性检查报告
+
+            ${summary}
+
+            ---
+
+            📄 [查看完整报告](https://github.com/${{ context.repo.owner }}/${{ context.repo.repo }}/actions/runs/${{ context.runId }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+
+    - name: Notify on Failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `宪法合规性检查失败 - ${new Date().toISOString().split('T')[0]}`,
+            body: `
+            ## 🚨 宪法合规性检查失败
+
+            **分支**: ${context.ref}
+            **提交**: ${context.sha}
+            **工作流**: [${context.workflow}](${context.repositoryUrl}/actions/runs/${context.runId}})
+
+            请检查并修复合规性问题后重新提交代码。
+
+            ### 修复建议
+            1. 查看详细的合规性报告
+            2. 修复致命和严重级别的违规
+            3. 确保代码符合项目宪法要求
+            4. 重新运行检查
+
+            ---
+
+            此问题由自动化合规检查系统生成。
+            `,
+            labels: ['constitution-violation', 'needs-review']
+          });
+
+  performance-impact-check:
+    runs-on: ubuntu-latest
+    needs: constitution-check
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install astroid
+        pip install pytest pytest-xdist
+
+    - name: Run Performance Impact Analysis
+      run: |
+        cd backend
+        python -c "
+        import ast
+        import time
+        from pathlib import Path
+
+        def analyze_complexity(directory):
+            complexities = []
+            for py_file in Path(directory).rglob('*.py'):
+                if '__pycache__' in str(py_file):
+                    continue
+                try:
+                    with open(py_file, 'r', encoding='utf-8') as f:
+                        tree = ast.parse(f.read())
+
+                    complexity = len([node for node in ast.walk(tree)
+                                   if isinstance(node, (ast.If, ast.For, ast.While, ast.Try))])
+                    complexities.append((str(py_file), complexity))
+                except:
+                    pass
+            return complexities
+
+        start_time = time.time()
+        complexities = analyze_complexity('src')
+        end_time = time.time()
+
+        print(f'分析了 {len(complexities)} 个文件')
+        print(f'平均复杂度: {sum(c for _, c in complexities) / len(complexities):.2f}')
+        print(f'分析耗时: {end_time - start_time:.2f}s')
+
+        # 检查是否有特别复杂的文件
+        high_complexity = [(f, c) for f, c in complexities if c > 20]
+        if high_complexity:
+            print('⚠️ 发现高复杂度文件:')
+            for f, c in high_complexity[:10]:
+                print(f'  {f}: {c}')
+        "
+
+    - name: Report Performance Metrics
+      run: |
+        echo "## 📊 性能影响分析结果" >> $GITHUB_STEP_SUMMARY
+        echo "分析时间: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "分析耗时: ${{ steps.performance-impact-check.outputs.duration || '未知' }}" >> $GITHUB_STEP_SUMMARY
+
+  compliance-score:
+    runs-on: ubuntu-latest
+    needs: constitution-check
+    if: always()
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Calculate Compliance Score
+      id: score
+      run: |
+        if [ -f "docs/reports/constitution_audit_report.md" ]; then
+          # 提取合规性评分
+          score=$(grep "总分:" docs/reports/constitution_audit_report.md | sed 's/.*总分: \([0-9.]*\)\/100.*/\1/')
+          echo "compliance_score=$score" >> $GITHUB_OUTPUT
+          echo "合规性评分: $score"
+        else
+          echo "compliance_score=0" >> $GITHUB_OUTPUT
+          echo "合规性评分: 0 (报告未生成)"
+        fi
+
+    - name: Update Badge
+      if: github.ref == 'refs/heads/main'
+      run: |
+        score="${{ steps.score.outputs.compliance_score }}"
+
+        # 创建徽章
+        echo "## 🏆 合规性徽章" >> $GITHUB_STEP_SUMMARY
+        echo "![Constitution Compliance](https://img.shields.io/badge/Constitution%20Compliance-$score%25-blue)" >> $GITHUB_STEP_SUMMARY
+
+        # 可以集成到README中
+        echo "合规性评分: $score/100"
+
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs: [constitution-check, compliance-score]
+    if: always()
+
+    steps:
+    - name: Quality Gate Check
+      run: |
+        score="${{ needs.compliance-score.outputs.compliance_score }}"
+
+        if [ -z "$score" ]; then
+          echo "❌ 无法获取合规性评分"
+          exit 1
+        fi
+
+        # 转换为整数比较
+        score_int=$(echo "$score" | cut -d. -f1)
+
+        if [ "$score_int" -lt 70 ]; then
+          echo "❌ 合规性评分过低: $score (要求 ≥ 70)"
+          echo "请修复合规性问题后重新提交"
+          exit 1
+        elif [ "$score_int" -lt 85 ]; then
+          echo "⚠️ 合规性评分较低: $score (建议 ≥ 85)"
+          echo "建议优化代码质量"
+        else
+          echo "✅ 合规性评分良好: $score"
+        fi
+
+    - name: Generate Quality Report
+      run: |
+        score="${{ needs.compliance-score.outputs.compliance_score }}"
+
+        cat > quality-report.md << EOF
+        # 📊 质量合规性报告
+
+        **生成时间**: $(date)
+        **分支**: ${GITHUB_REF}
+        **提交**: ${GITHUB_SHA}
+
+        ## 🏆 合规性评分
+
+        ![Constitution Compliance](https://img.shields.io/badge/Constitution%20Compliance-$score%25-blue)
+
+        ## 📋 质量门槛
+
+        | 评分范围 | 状态 | 建议 |
+        |----------|------|------|
+        | 90-100 | 优秀 | 持续保持 |
+        | 85-89 | 良好 | 可考虑进一步优化 |
+        | 70-84 | 合格 | 建议改进 |
+        | <70 | 不合格 | 必须修复 |
+
+        ## 🎯 下一步行动
+
+        1. 查看详细的合规性审计报告
+        2. 根据建议修复发现的问题
+        3. 持续改进代码质量
+
+        ---
+
+        *此报告由自动化质量控制系统生成*
+        EOF
+
+        echo "质量报告已生成"
+
+    - name: Upload Quality Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: quality-report
+        path: quality-report.md
+        retention-days: 30

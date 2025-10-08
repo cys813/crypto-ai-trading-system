@@ -234,7 +234,7 @@ logs/
 temp/
 cache/
 uploads/
-reports/
+# reports/ - 允许提交分析报告
 
 # Performance test results
 *.perf

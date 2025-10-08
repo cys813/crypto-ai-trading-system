@@ -61,9 +61,13 @@ class Settings(BaseSettings):
 
     # LLM API配置
     OPENAI_API_KEY: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
+    OPENAI_BASE_URL: Optional[str] = Field(default=None, env="OPENAI_BASE_URL")
+    OPENAI_ORGANIZATION: Optional[str] = Field(default=None, env="OPENAI_ORGANIZATION")
     OPENAI_MODEL: str = Field(default="gpt-4", env="OPENAI_MODEL")
     OPENAI_MAX_TOKENS: int = Field(default=4096, env="OPENAI_MAX_TOKENS")
     OPENAI_TEMPERATURE: float = Field(default=0.1, env="OPENAI_TEMPERATURE")
+    OPENAI_TIMEOUT: int = Field(default=60, env="OPENAI_TIMEOUT")
+    OPENAI_MAX_RETRIES: int = Field(default=3, env="OPENAI_MAX_RETRIES")
 
     ANTHROPIC_API_KEY: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY")
     ANTHROPIC_MODEL: str = Field(default="claude-3-sonnet-20240229", env="ANTHROPIC_MODEL")
@@ -155,6 +159,72 @@ class Settings(BaseSettings):
         if v not in allowed:
             raise ValueError(f"Risk level must be one of: {allowed}")
         return v
+
+    @validator("OPENAI_BASE_URL", pre=True)
+    def validate_base_url(cls, v):
+        """验证OpenAI Base URL格式"""
+        if v is None:
+            return v
+
+        # 基本格式验证
+        if not v.startswith(("http://", "https://")):
+            raise ValueError(
+                "OPENAI_BASE_URL must start with http:// or https:// "
+                f"Invalid value: '{v}'. Example: https://api.openai.com/v1"
+            )
+
+        # 清理URL
+        cleaned_url = v.rstrip("/")
+
+        # 可选：验证是否包含合理的路径
+        if not any(path in cleaned_url.lower() for path in ["/v1", "/openai", "/api"]):
+            # 这是一个警告，不是错误，因为某些自定义端点可能使用不同路径
+            pass
+
+        return cleaned_url
+
+    @validator("OPENAI_TIMEOUT", pre=True)
+    def validate_timeout(cls, v):
+        """验证超时设置"""
+        if v is not None:
+            try:
+                timeout_val = int(v)
+                if timeout_val <= 0:
+                    raise ValueError(
+                        f"OPENAI_TIMEOUT must be a positive integer. "
+                        f"Invalid value: '{v}'. Recommended range: 30-300 seconds"
+                    )
+                if timeout_val > 600:  # 10分钟
+                    # 警告但不阻止
+                    pass
+                return timeout_val
+            except (ValueError, TypeError):
+                raise ValueError(
+                    f"OPENAI_TIMEOUT must be a valid integer. "
+                    f"Invalid value: '{v}'. Example: 60"
+                )
+        return 60
+
+    @validator("OPENAI_MAX_RETRIES", pre=True)
+    def validate_max_retries(cls, v):
+        """验证重试次数"""
+        if v is not None:
+            try:
+                retries_val = int(v)
+                if retries_val < 0:
+                    raise ValueError(
+                        f"OPENAI_MAX_RETRIES must be a non-negative integer. "
+                        f"Invalid value: '{v}'. Recommended range: 0-10"
+                    )
+                if retries_val > 10:  # 警告但不阻止
+                    pass
+                return retries_val
+            except (ValueError, TypeError):
+                raise ValueError(
+                    f"OPENAI_MAX_RETRIES must be a valid integer. "
+                    f"Invalid value: '{v}'. Example: 3"
+                )
+        return 3
 
     def is_production(self) -> bool:
         """检查是否为生产环境"""

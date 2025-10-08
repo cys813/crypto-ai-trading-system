@@ -115,29 +115,81 @@ python3 project_manager.py test
 python3 project_manager.py setup
 ```
 
-### 4. 手动启动
+### 4. 环境配置
+
+#### 4.1 配置环境变量
 
 ```bash
-# 设置环境变量
-cp scripts/deployment/.env.example .env
-# 编辑 .env 文件，配置API密钥等
+# 复制环境变量模板
+cp .env.example .env
 
-# 启动服务
-cd scripts/deployment
-docker-compose up -d
+# 编辑 .env 文件，配置必要的API密钥
+nano .env
+```
 
-# 安装Python依赖（用于本地开发）
+#### 4.2 必需配置项
+
+```bash
+# 基础应用配置
+SECRET_KEY=your-super-secret-key-change-in-production-please-use-strong-key
+
+# 数据库配置
+DATABASE_URL=postgresql+asyncpg://username:password@localhost:5432/database_name
+
+# Redis配置
+REDIS_URL=redis://localhost:6379/0
+
+# LLM API配置（至少配置一个）
+OPENAI_API_KEY=your_openai_api_key_here
+# 或
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+```
+
+#### 4.3 交易所API配置（可选）
+
+```bash
+# Binance（推荐用于测试）
+BINANCE_API_KEY=your_binance_api_key
+BINANCE_API_SECRET=your_binance_api_secret
+
+# 其他交易所（根据需要配置）
+COINBASE_API_KEY=your_coinbase_api_key
+COINBASE_API_SECRET=your_coinbase_api_secret
+COINBASE_API_PASSPHRASE=your_coinbase_passphrase
+KRAKEN_API_KEY=your_kraken_api_key
+KRAKEN_API_SECRET=your_kraken_api_secret
+```
+
+### 5. 手动启动
+
+```bash
+# 启动Redis（必需）
+docker run -d -p 6379:6379 redis:6-alpine
+
+# 启动应用服务
+cd backend
+python3 -m uvicorn src.main:app --host 0.0.0.0 --port 8000
+
+# 或使用Docker（推荐）
+docker-compose -f scripts/deployment/docker-compose.yml up -d
+
+# 安装Python依赖（本地开发）
 pip3 install -r requirements.txt
 ```
 
-### 3. 配置环境变量
+### 6. 配置验证
+
+使用内置的配置验证脚本检查配置：
 
 ```bash
-# 配置交易所API密钥（可选）
-export BINANCE_API_KEY="your_binance_api_key"
-export BINANCE_API_SECRET="your_binance_api_secret"
-export COINBASE_API_KEY="your_coinbase_api_key"
-# ... 其他交易所密钥
+# 验证OpenAI配置
+python3 backend/scripts/validate_openai_config.py
+
+# 包含连接测试
+python3 backend/scripts/validate_openai_config.py --test-connection
+
+# 输出JSON格式结果
+python3 backend/scripts/validate_openai_config.py --output-json
 ```
 
 ### 4. 启动Redis
@@ -185,6 +237,39 @@ exchanges:
     circuit_breaker:
       failure_threshold: 5
       recovery_timeout: 60
+```
+
+### LLM配置
+
+系统支持OpenAI及OpenAI兼容的API端点配置。
+
+```yaml
+# 基础配置
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4
+OPENAI_MAX_TOKENS=4096
+OPENAI_TEMPERATURE=0.1
+
+# 自定义端点配置（可选）
+OPENAI_BASE_URL=https://api.openai.com/v1
+
+# 其他提供商示例
+# SiliconFlow
+# OPENAI_BASE_URL=https://api.siliconflow.cn/v1
+# OPENAI_API_KEY=your_siliconflow_key
+
+# DeepSeek
+# OPENAI_BASE_URL=https://api.deepseek.com/v1
+# OPENAI_API_KEY=your_deepseek_key
+
+# Azure OpenAI
+# OPENAI_BASE_URL=https://your-resource.openai.azure.com/openai/deployments/your-deployment
+# OPENAI_API_KEY=your_azure_key
+
+# 高级配置
+OPENAI_ORGANIZATION=your_org_id
+OPENAI_TIMEOUT=60
+OPENAI_MAX_RETRIES=3
 ```
 
 ### 限流策略配置

@@ -107,18 +107,45 @@ class OpenAIClient(BaseLLMClient):
         self._initialize_client()
 
     def _initialize_client(self):
-        """初始化OpenAI客户端"""
+        """初始化OpenAI客户端，支持自定义配置"""
         try:
             import openai
-            self.client = openai.AsyncOpenAI(
-                api_key=getattr(settings, 'OPENAI_API_KEY', None),
-                timeout=60,
-                max_retries=3
+
+            # 构建客户端参数
+            client_kwargs = {
+                "api_key": getattr(settings, 'OPENAI_API_KEY', None),
+                "timeout": getattr(settings, 'OPENAI_TIMEOUT', 60),
+                "max_retries": getattr(settings, 'OPENAI_MAX_RETRIES', 3)
+            }
+
+            # 添加可选的base_url参数
+            if base_url := getattr(settings, 'OPENAI_BASE_URL', None):
+                client_kwargs["base_url"] = base_url
+
+            # 添加可选的组织ID
+            if organization := getattr(settings, 'OPENAI_ORGANIZATION', None):
+                client_kwargs["organization"] = organization
+
+            self.client = openai.AsyncOpenAI(**client_kwargs)
+
+            # 记录初始化信息（不包含敏感数据）
+            self.logger.info(
+                "OpenAI客户端初始化成功",
+                base_url=base_url or "default",
+                timeout=client_kwargs["timeout"],
+                max_retries=client_kwargs["max_retries"]
             )
+
         except ImportError as e:
             raise LLMServiceError(
                 message="OpenAI package not installed. Install with: pip install openai",
                 error_code="OPENAI_NOT_INSTALLED",
+                cause=e
+            )
+        except Exception as e:
+            raise LLMServiceError(
+                message=f"OpenAI客户端初始化失败: {str(e)}",
+                error_code="OPENAI_CLIENT_INIT_FAILED",
                 cause=e
             )
 
@@ -394,6 +421,9 @@ class LLMIntegrationService:
         # 初始化客户端
         self._initialize_clients()
 
+        # 记录配置状态
+        self.log_configuration_status()
+
     def _initialize_clients(self):
         """初始化LLM客户端"""
         # 初始化OpenAI客户端
@@ -462,13 +492,48 @@ class LLMIntegrationService:
         status = {}
 
         for provider, client in self.clients.items():
-            status[provider.value] = {
+            provider_info = {
                 "available": True,
                 "provider": provider.value,
                 "client_type": type(client).__name__
             }
 
+            # 添加OpenAI特定的配置信息
+            if provider == LLMProvider.OPENAI and hasattr(client, 'client'):
+                provider_info.update({
+                    "base_url": getattr(client.client, 'base_url', 'default'),
+                    "timeout": getattr(client.client, 'timeout', 'unknown'),
+                    "max_retries": getattr(client.client, 'max_retries', 'unknown'),
+                    "model": getattr(settings, 'OPENAI_MODEL', 'gpt-4'),
+                    "configured_api_key": bool(getattr(settings, 'OPENAI_API_KEY', None))
+                })
+
+            status[provider.value] = provider_info
+
         return status
+
+    def log_configuration_status(self) -> None:
+        """记录当前配置状态"""
+        openai_config = {
+            "api_key_configured": bool(getattr(settings, 'OPENAI_API_KEY', None)),
+            "base_url": getattr(settings, 'OPENAI_BASE_URL', 'default (OpenAI)'),
+            "organization": getattr(settings, 'OPENAI_ORGANIZATION', None),
+            "model": getattr(settings, 'OPENAI_MODEL', 'gpt-4'),
+            "timeout": getattr(settings, 'OPENAI_TIMEOUT', 60),
+            "max_retries": getattr(settings, 'OPENAI_MAX_RETRIES', 3)
+        }
+
+        self.logger.info("OpenAI configuration status", **openai_config)
+
+        self.business_logger.log_system_event(
+            event_type="llm_configuration_loaded",
+            severity="info",
+            message="LLM配置加载完成",
+            details={
+                "provider": "openai",
+                "configuration": openai_config
+            }
+        )
 
     async def test_connection(self, provider: LLMProvider) -> bool:
         """测试提供商连接"""
@@ -483,11 +548,37 @@ class LLMIntegrationService:
                 max_tokens=10
             )
 
+            start_time = time.time()
             response = await client.generate_completion(test_request)
+            response_time = int((time.time() - start_time) * 1000)
+
+            # 记录连接测试详情
+            self.business_logger.log_system_event(
+                event_type="llm_connection_test",
+                severity="info",
+                message=f"{provider.value}连接测试成功",
+                details={
+                    "provider": provider.value,
+                    "model": response.model,
+                    "response_time_ms": response_time,
+                    "base_url": getattr(client.client, "base_url", "default") if hasattr(client, 'client') else "unknown"
+                }
+            )
+
             return "OK" in response.content
 
         except Exception as e:
             self.logger.error(f"测试{provider.value}连接失败: {e}")
+            self.business_logger.log_system_event(
+                event_type="llm_connection_test_failed",
+                severity="error",
+                message=f"{provider.value}连接测试失败",
+                details={
+                    "provider": provider.value,
+                    "error": str(e),
+                    "base_url": getattr(client.client, "base_url", "default") if hasattr(client, 'client') else "unknown"
+                }
+            )
             return False
 
     def calculate_total_cost(self, responses: List[LLMResponse]) -> float:
